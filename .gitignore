@@ -3,3 +3,9 @@ data/*
 
 # 日志文件
 logs/*
+
+# 环境
+myenv/
+venv/
+.env/
+.venv/
