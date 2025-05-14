@@ -1,11 +1,21 @@
 # ncatbot 运行文件
-data/*
+data/*_access.json
 
 # 日志文件
 logs/*
+
+# 敏感数据文件
+data/*.db
+
+# 开发文件
+dev/
+test.py
 
 # 环境
 myenv/
 venv/
 .env/
 .venv/
+
+# python运行文件
+*.pyc
