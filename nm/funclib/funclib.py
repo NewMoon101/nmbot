@@ -6,7 +6,11 @@ import sys
 import time
 import random
 import signal
+import aiohttp
+import hashlib
 import asyncio
+from PIL import Image
+from io import BytesIO
 
 def sleep_random(min: int, max: int) -> None:
     time.sleep(random.randrange(min, max))
@@ -66,3 +70,47 @@ def parse_command_order(command_str: str) -> tuple[dict[str, list], dict[str, li
                             option_pair_list.append(options_values[k])
                     pair_dict[options_values[i]] = option_pair_list
     return {command: command_pair_list}, pair_dict
+
+async def download_img(url, retry_times: int = 3) -> bytes | None:
+    for _ in range(0,retry_times):
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url) as response:
+                if response.status == 200:
+                    return await response.read()
+                else:
+                    continue
+
+def get_hash256(data: bytes) -> bytes:
+    """
+    获取数据的sha256值
+    Args:
+        data: 二进制的数据
+    Returns:
+        二进制数据
+    """
+    # TODO:數據很大时可能有性能问题
+    hash256 = hashlib.sha256()
+    hash256.update(data)
+    return hash256.digest()
+
+def time_time() -> int:
+    return int(time.time())
+
+def del_whitespace(s: str) -> str:
+    """
+    刪除字符串中的空白字符
+    Args:
+        s: 一個字符串
+    Returns:
+        一個字符串
+    """
+    s_ = re.sub(r"\s+", "", s)
+    return s_
+
+def func_time(func):
+    def wrapper():
+        start_time = time.time()
+        func()
+        end_time = time.time()
+        print(f"運行時間: {end_time - start_time}")
+    return wrapper
