@@ -47,3 +47,17 @@ def get_msg_text(msg: GroupMessage | PrivateMessage) -> str:
         if i["type"] == "text":
             str0 += i["data"]["text"]
     return str0
+
+def get_msg_image(msg: GroupMessage | PrivateMessage) -> list:
+    """
+    獲取一條消息中的"image"消息段
+    Args:
+        msg: 消息
+    Returns:
+        image消息段的列表
+    """
+    message_arry = []
+    for i in msg.message:
+        if i["type"] == "image":
+            message_arry += i
+    return message_arry
