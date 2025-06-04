@@ -63,7 +63,7 @@ def get_msg_image(msg: GroupMessage | PrivateMessage) -> list:
             message_arry += i
     return message_arry
 
-def trans_msg_to_msgchain(msg: GroupMessage | PrivateMessage) -> MessageChain:
+def trans_msg_to_msgchain(msg_message: list[dict]) -> MessageChain:
     """
     將一條消息轉換爲MessageChain對象
     Args:
@@ -72,7 +72,7 @@ def trans_msg_to_msgchain(msg: GroupMessage | PrivateMessage) -> MessageChain:
         MessageChain對象
     """
     message_chain = MessageChain()
-    for i in msg.message:
+    for i in msg_message:
         if i["type"] == "text":
             message_chain += (Text(i["data"]["text"]))
         elif i["type"] == "image":
@@ -90,6 +90,8 @@ def trans_msg_to_msgchain(msg: GroupMessage | PrivateMessage) -> MessageChain:
         # elif i["type"] == "json":
         #     message_chain += (Json(i["data"]["content"]))  
         #暫時不支持json music custom_music record video file消息段
-        elif i["type"] == "Rps":
+        elif i["type"] == "rps":
             message_chain += (Rps(i["data"]["result"]))
+        elif i["type"] == "image":
+            message_chain += (Image(i["data"]["file"])) # TODO: 圖像可能無法獲取, 以後應當在這裏加一個檢查機制
     return message_chain
