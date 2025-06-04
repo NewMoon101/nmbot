@@ -3,6 +3,7 @@
 from nm.funclib.funclib import del_whitespace, get_hash256
 
 from ncatbot.core.message import GroupMessage, PrivateMessage
+from ncatbot.core import (MessageChain, Text, Reply, At, AtAll, Dice, Face, Image, Json, Music, CustomMusic, Record, Rps, Video, File)
 
 def get_msg_img_num(msg: GroupMessage) -> int:
     """
@@ -61,3 +62,34 @@ def get_msg_image(msg: GroupMessage | PrivateMessage) -> list:
         if i["type"] == "image":
             message_arry += i
     return message_arry
+
+def trans_msg_to_msgchain(msg: GroupMessage | PrivateMessage) -> MessageChain:
+    """
+    將一條消息轉換爲MessageChain對象
+    Args:
+        msg: 消息
+    Returns:
+        MessageChain對象
+    """
+    message_chain = MessageChain()
+    for i in msg.message:
+        if i["type"] == "text":
+            message_chain += (Text(i["data"]["text"]))
+        elif i["type"] == "image":
+            message_chain += (Image(i["data"]["file"]))
+        elif i["type"] == "reply":
+            message_chain += (Reply(i["data"]["id"]))
+        elif i["type"] == "at":
+            message_chain += (At(i["data"]["qq"]))
+        elif i["type"] == "at_all":
+            message_chain += (AtAll())
+        elif i["type"] == "dice":
+            message_chain += (Dice(i["data"]["result"]))
+        elif i["type"] == "face":
+            message_chain += (Face(i["data"]["id"]))
+        # elif i["type"] == "json":
+        #     message_chain += (Json(i["data"]["content"]))  
+        #暫時不支持json music custom_music record video file消息段
+        elif i["type"] == "Rps":
+            message_chain += (Rps(i["data"]["result"]))
+    return message_chain
