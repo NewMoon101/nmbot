@@ -12,6 +12,8 @@ import asyncio
 from PIL import Image
 from io import BytesIO
 
+import psutil
+
 def sleep_random(min: int, max: int) -> None:
     time.sleep(random.randrange(min, max))
 
@@ -114,3 +116,10 @@ def func_time(func):
         end_time = time.time()
         print(f"運行時間: {end_time - start_time}")
     return wrapper
+
+def get_sysinfo() -> dict[str, float]:
+    """获取系统信息，包括CPU和内存使用率"""
+    cpu_usage = psutil.cpu_percent(interval=1)
+    memory_info = psutil.virtual_memory()
+    memory_usage = memory_info.percent
+    return {"cpu_usage": cpu_usage, "memory_usage": memory_usage}
