@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import argparse
+
 from pathlib import Path # 引入Path类是为了适配不同系统的路径分隔符不同(windows\linux/)
 
 from ncatbot.utils.config import config
@@ -7,8 +9,16 @@ from ncatbot.core.client import BotClient
 from ncatbot.core.message import GroupMessage, PrivateMessage
 from ncatbot.utils.logger import get_log
 
-config_yaml_path = str(Path("config.yaml"))
+parser = argparse.ArgumentParser(description="NcatBot Bot Client")
+parser.add_argument("-c", "--config", type=str, default="config.yaml", help="Path to the configuration file", required=False)
+args = parser.parse_args()
+if args.config:
+    config_yaml_path = str(Path(args.config))  # 将路径转换为字符串
+else:
+    config_yaml_path = str(Path("config.yaml"))
 config.load_config(config_yaml_path) # 从文件加载配置, 一定版本后的ncatbot会自动完成这一步
+
+
 bot = BotClient() # 创建BotClient
 logger = get_log() # 创建logger
 
