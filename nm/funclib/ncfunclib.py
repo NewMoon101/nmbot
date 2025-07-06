@@ -3,6 +3,7 @@
 from nm.funclib.funclib import del_whitespace, get_hash256
 
 from ncatbot.core.message import GroupMessage, PrivateMessage
+from ncatbot.core.client import BotClient
 from ncatbot.core import (MessageChain, Text, Reply, At, AtAll, Dice, Face, Image, Json, Music, CustomMusic, Record, Rps, Video, File)
 
 def get_msg_img_num(msg: GroupMessage) -> int:
@@ -63,16 +64,16 @@ def get_msg_image(msg: GroupMessage | PrivateMessage) -> list:
             message_arry += i
     return message_arry
 
-def trans_msg_to_msgchain(msg_message: list[dict]) -> MessageChain:
+def trans_msg_to_msgchain(msg_arrays: list[dict]) -> MessageChain:
     """
-    將一條消息轉換爲MessageChain對象
+    將一條msg_arrays轉換爲MessageChain對象
     Args:
         msg: 消息
     Returns:
         MessageChain對象
     """
     message_chain = MessageChain()
-    for i in msg_message:
+    for i in msg_arrays:
         if i["type"] == "text":
             message_chain += (Text(i["data"]["text"]))
         elif i["type"] == "image":
@@ -95,3 +96,14 @@ def trans_msg_to_msgchain(msg_message: list[dict]) -> MessageChain:
         elif i["type"] == "image":
             message_chain += (Image(i["data"]["file"])) # TODO: 圖像可能無法獲取, 以後應當在這裏加一個檢查機制
     return message_chain
+
+async def post_msg_arrays_group(bot: BotClient, group_id: int, msg_arrays: list[dict]) -> None:
+    """
+    發送一條msg_arrays的群消息
+    Args:
+        bot: BotClient實例
+        group_id: 群號
+        msg_arrays: 消息數組
+    """
+    msg_chain = trans_msg_to_msgchain(msg_arrays)
+    await bot.api.post_group_msg(group_id=group_id, rtf=msg_chain)
