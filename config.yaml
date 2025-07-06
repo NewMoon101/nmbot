@@ -34,4 +34,18 @@ stop_napcat: false  # NcatBot 下线时是否停止 NapCat
 enable_webui_interaction: false  # 是否允许 NcatBot 与 NapCat webui 交互
 report_self_message: false  # 是否报告 Bot 自己的消息
 
-# 开发自定义的配置项
+#################
+
+# nmbot自定義配置
+# 主人, 同上面的root, 這裏只在nmbot中使用
+master:
+  - 123456
+
+devgroup: 123456 # 開發羣組
+db:
+  type: "postgres"  # 数据库类型
+  host: "localhost"  # 数据库主机
+  port: 5432  # 数据库端口
+  user: "your_username"  # 数据库用户名
+  password: "your_password"  # 数据库密码
+  database: "your_database"  # 数据库名称
