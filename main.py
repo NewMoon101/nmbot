@@ -5,6 +5,7 @@ import argparse
 from pathlib import Path # 引入Path类是为了适配不同系统的路径分隔符不同(windows\linux/)
 
 from nm.core.config import ConfigNm
+from nm.command import command  # 导入命令处理函数
 
 from ncatbot.utils.config import config
 from ncatbot.core.client import BotClient
@@ -26,7 +27,7 @@ logger = get_log() # 创建logger
 
 @bot.group_event()
 async def on_group_message(msg: GroupMessage):
-    pass
+    await command(bot, msg, config_nm, logger)
 
 @bot.private_event()
 async def on_private_message(msg: PrivateMessage):
