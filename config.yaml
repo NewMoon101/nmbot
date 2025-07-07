@@ -46,6 +46,6 @@ db:
   type: "postgres"  # 数据库类型
   host: "localhost"  # 数据库主机
   port: 5432  # 数据库端口
-  user: "your_username"  # 数据库用户名
-  password: "your_password"  # 数据库密码
-  database: "your_database"  # 数据库名称
+  user: "nmbot"  # 数据库用户名
+  password: "123456"  # 数据库密码 
+  database: "nmbot"  # 数据库名称
