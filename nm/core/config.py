@@ -2,6 +2,8 @@
 
 import yaml
 
+from pathlib import Path
+
 from ncatbot.utils.config import config as nc_config
 
 class ConfigNm:
@@ -14,6 +16,11 @@ class ConfigNm:
             self.password = db_config.get("password", "123456")
             self.database = db_config.get("database", "nmbot")
 
+    class LocalDatabaseConfig:
+        def __init__(self, db_local_config: dict):
+            self.type = db_local_config.get("type", "sqlite")
+            self.path = str(Path(db_local_config.get("path", "data/qq123456"), "msg.db"))
+
     def __init__(self, path: str):
         with open(path, mode="r", encoding="utf-8") as config_file:
             config: dict = yaml.safe_load(config_file)
@@ -21,3 +28,4 @@ class ConfigNm:
             self.master: list[int] = config.get("master", [])
             self.selfid = nc_config.bt_uin
             self.db = self.DatabaseConfig(config.get("db", {}))
+            self.db_local = self.LocalDatabaseConfig(config.get("db-local", {}))

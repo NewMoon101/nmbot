@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from pathlib import Path
-from peewee import SqliteDatabase, Model, IntegerField, TextField, BlobField, AutoField, ForeignKeyField
+from peewee import SqliteDatabase, Model, IntegerField, TextField, BlobField, AutoField, ForeignKeyField, Proxy
 
 from nm.funclib.funclib import time_time
 from nm.funclib.ncfunclib import get_msg_img_num, get_msg_hash, get_msg_image
@@ -9,18 +9,20 @@ from nm.funclib.ncfunclib import get_msg_img_num, get_msg_hash, get_msg_image
 from ncatbot.core.client import BotClient
 from ncatbot.core.message import GroupMessage
 
-msg_db_path : str = str(Path(".", "data", "msg.db")) # 這裏的路徑不知放在哪裏, 暫時先寫在這裏吧, 以後可能放進config
+from nm.core.config import ConfigNm
 
-def create_msg_db():
+msg_db_proxy = Proxy()  # 使用Proxy来延迟数据库的创建
+
+def create_msg_db(config_nm: ConfigNm) -> SqliteDatabase:
+    msg_db = SqliteDatabase(config_nm.db_local.path)
     msg_db.connect()
     msg_db.create_tables([SavedMsg, MsgImg])
-
-msg_db = SqliteDatabase(msg_db_path) # 對於這個庫, 期望之後加入檢測大小自動存檔之前消息的功能
+    return msg_db
 
 class MsgModel(Model):
 
     class Meta:
-        database = msg_db
+        database = msg_db_proxy
 
 class SavedMsg(MsgModel):
 

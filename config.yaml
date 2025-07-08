@@ -49,3 +49,7 @@ db:
   user: "nmbot"  # 数据库用户名
   password: "123456"  # 数据库密码 
   database: "nmbot"  # 数据库名称
+
+db-local:
+  type: "sqlite"  # 本地数据库类型
+  path: "data/qq123456"  # 本地数据库文件路径
