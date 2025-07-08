@@ -17,15 +17,15 @@ class ConfigNm:
             self.database = db_config.get("database", "nmbot")
 
     class LocalDatabaseConfig:
-        def __init__(self, db_local_config: dict):
+        def __init__(self, db_local_config: dict, selfid: str):
             self.type = db_local_config.get("type", "sqlite")
-            self.path = str(Path(db_local_config.get("path", "data/qq123456"), "msg.db"))
+            self.path = str(Path("data/qq" + str(selfid) + "/msg.db"))
 
     def __init__(self, path: str):
         with open(path, mode="r", encoding="utf-8") as config_file:
             config: dict = yaml.safe_load(config_file)
             self.nc_conf = nc_config
             self.master: list[int] = config.get("master", [])
-            self.selfid = nc_config.bt_uin
+            self.selfid: str = config.get("bt_uin", "123456")
             self.db = self.DatabaseConfig(config.get("db", {}))
-            self.db_local = self.LocalDatabaseConfig(config.get("db-local", {}))
+            self.db_local = self.LocalDatabaseConfig(config.get("db-local", {}), selfid=self.selfid)

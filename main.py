@@ -25,7 +25,6 @@ config.load_config(config_yaml_path) # 从文件加载配置, 一定版本后的
 config_nm = ConfigNm(config_yaml_path)  # 创建ConfigNm实例
 
 msg_db = create_msg_db(config_nm) # TODO:對於這個庫, 期望之後加入檢測大小自動存檔之前消息的功能
-msg_db_proxy.initialize(msg_db)  # 初始化消息数据库代理
 
 bot = BotClient() # 创建BotClient
 logger = get_log() # 创建logger

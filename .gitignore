@@ -6,6 +6,7 @@ logs/*
 
 # 敏感数据文件
 data/*.db
+data/qq*/*
 
 # 开发文件
 dev/
