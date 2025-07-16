@@ -42,6 +42,12 @@ master:
   - 123456
 
 devgroup: 123456 # 開發羣組
+
+promotegroup:
+    - 111111
+    - 222222
+    - 333333
+
 db:
   type: "postgres"  # 数据库类型
   host: "localhost"  # 数据库主机

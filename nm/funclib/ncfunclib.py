@@ -36,6 +36,22 @@ def get_msg_hash(msg: GroupMessage | PrivateMessage) -> bytes:
     msg_sha256 = get_hash256(msg_text.encode("utf-8"))
     return msg_sha256
 
+def get_msg_at(msg: GroupMessage) -> list[str]:
+    """
+    獲取一條**群**消息中的at的QQ號
+    Args:
+        msg: 一條群消息
+    Returns:
+        at的QQ號列表
+    """
+    at_list = []
+    for i in msg.message:
+        if i["type"] == "at":
+            at_list.append(i["data"]["qq"])
+        else:
+            continue
+    return at_list
+
 def get_msg_text(msg: GroupMessage | PrivateMessage) -> str:
     """
     獲取一條消息中所有類型爲"text"的消息段, 已拼接
