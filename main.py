@@ -7,6 +7,7 @@ from peewee import SqliteDatabase
 
 from nm.core.config import ConfigNm
 from nm.core.msg import create_msg_db, msg_db_proxy  # 导入创建消息数据库的函数
+from nm.core.info import create_group_info_db, group_info_db_proxy  # 导入创建群组信息数据库的函数
 from nm.command import command  # 导入命令处理函数
 
 from ncatbot.utils.config import config
@@ -25,6 +26,7 @@ config.load_config(config_yaml_path) # 从文件加载配置, 一定版本后的
 config_nm = ConfigNm(config_yaml_path)  # 创建ConfigNm实例
 
 msg_db = create_msg_db(config_nm) # TODO:對於這個庫, 期望之後加入檢測大小自動存檔之前消息的功能
+gorup_info_db = create_group_info_db(config_nm)  # 创建群组信息数据库
 
 bot = BotClient() # 创建BotClient
 logger = get_log() # 创建logger
