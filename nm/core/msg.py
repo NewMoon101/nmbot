@@ -14,10 +14,10 @@ from nm.core.config import ConfigNm
 msg_db_proxy = Proxy()  # 使用Proxy来延迟数据库的创建
 
 def create_msg_db(config_nm: ConfigNm) -> SqliteDatabase:
-    db_path = Path(config_nm.db_local.path)
+    db_path = Path(config_nm.db_local.path + "/msg.db")
     if not db_path.parent.exists():
         db_path.parent.mkdir(parents=True, exist_ok=True)
-    msg_db = SqliteDatabase(config_nm.db_local.path)
+    msg_db = SqliteDatabase(db_path)
     msg_db.connect()
     msg_db_proxy.initialize(msg_db)
     msg_db.create_tables([SavedMsg, MsgImg])

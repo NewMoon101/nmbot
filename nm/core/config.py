@@ -19,7 +19,7 @@ class ConfigNm:
     class LocalDatabaseConfig:
         def __init__(self, db_local_config: dict, selfid: str):
             self.type = db_local_config.get("type", "sqlite")
-            self.path = str(Path("data/qq" + str(selfid) + "/msg.db"))
+            self.path = str(Path("data/qq" + str(selfid)))
 
     def __init__(self, path: str):
         with open(path, mode="r", encoding="utf-8") as config_file:
@@ -29,3 +29,4 @@ class ConfigNm:
             self.selfid: str = config.get("bt_uin", "123456")
             self.db = self.DatabaseConfig(config.get("db", {}))
             self.db_local = self.LocalDatabaseConfig(config.get("db-local", {}), selfid=self.selfid)
+            self.promote_group: list[int] = config.get("promotegroup", [])
