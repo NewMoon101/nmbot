@@ -70,6 +70,17 @@ def save_group_info(group_list: list[dict], group_info_db: SqliteDatabase):
                     max_member_count=group["max_member_count"]
                 )
 
+async def update_group_info(bot: BotClient, group_info_db: SqliteDatabase, logger) -> None:
+    """
+    更新群组信息
+    Args:
+        bot: BotClient实例
+        group_info_db: 群组信息数据库
+    """
+    group_list = await get_group_list(bot)
+    save_group_info(group_list, group_info_db)
+    logger.info("群组信息已更新")
+
 def get_group_info(group_id: int) -> GroupInfo | None:
     group_info = GroupInfoDb.select().where(GroupInfoDb.group_id == group_id).first()
     if group_info:
