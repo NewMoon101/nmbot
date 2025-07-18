@@ -33,7 +33,7 @@ logger = get_log() # 创建logger
 
 @bot.group_event()
 async def on_group_message(msg: GroupMessage):
-    await command(bot, msg, config_nm, logger)
+    await command(bot, msg, config_nm, logger, gorup_info_db)  # 调用命令处理函数
 
 @bot.private_event()
 async def on_private_message(msg: PrivateMessage):

@@ -3,14 +3,17 @@
 import shlex
 import argparse
 
+from peewee import SqliteDatabase
+
 from nm.core.config import ConfigNm
 from nm.funclib.funclib import get_sysinfo
 from nm.funclib.ncfunclib import get_msg_text
+from nm.core.info import update_group_info
 
 from ncatbot.core import BotClient
-from ncatbot.core.message import GroupMessage, PrivateMessage
+from ncatbot.core.message import GroupMessage
 
-async def command(bot: BotClient, msg: GroupMessage, config_nm: ConfigNm, logger) -> None:
+async def command(bot: BotClient, msg: GroupMessage, config_nm: ConfigNm, logger, group_info_db: SqliteDatabase) -> None:
     """全部聊天內命令入口
     Args:
         bot (BotClient): BotClient實例
@@ -27,3 +30,11 @@ async def command(bot: BotClient, msg: GroupMessage, config_nm: ConfigNm, logger
             sysinfo = get_sysinfo()
             logger.info(f"系統信息: {sysinfo}")
             await bot.api.post_group_msg(group_id=msg.group_id, text=f"系統信息: {sysinfo}")
+        elif args.command == "help":
+            await bot.api.post_group_msg(group_id=msg.group_id, text="可用命令: sysinfo, help")
+        elif args.command == "update":
+            parser.add_argument("-m", "--module", type=str, help="要更新的模塊")
+            args = parser.parse_args(shlex.split(get_msg_text(msg)))
+            if args.module:
+                if args.module == "group_info":
+                    await update_group_info(bot, group_info_db, logger)
