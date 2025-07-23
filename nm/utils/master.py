@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from nm.core.config import ConfigNm
-from nm.funclib.ncfunclib import get_msg_at
+from nm.funclib.ncfunclib import get_msg_at, get_msg_type, get_msg_reply
 from nm.core.info import get_group_info, get_user_info
 
 from ncatbot.core.client import BotClient
@@ -60,3 +60,23 @@ async def report_red_pocket(msg: GroupMessage, bot: BotClient, config_nm: Config
             return
         info_reply = f"无内容的群消息:\n来自>{group_info.group_name}({msg.group_id})<"
         await bot.api.post_group_msg(group_id=report_group_id, text=info_reply)
+
+async def report_replied(msg: GroupMessage, bot: BotClient, config_nm: ConfigNm, report_group_id: int, logger):
+    if "reply" in get_msg_type(msg):
+        msg_id = get_msg_reply(msg)
+        try:
+            replied_msg_data: dict = await bot.api.get_msg(message_id=msg_id)
+            replied_user_id: int = replied_msg_data.get("user_id", 0)
+        except Exception as e:
+            logger.info(e)
+        else:
+            if config_nm.selfid == str(replied_user_id):
+                info_reply = f"回复:\n"
+                logger.info(msg)
+                group_info = get_group_info(msg.group_id)
+                if group_info is None:
+                    logger.error(f"群组信息获取失败: {msg.group_id}")
+                    return
+                info_reply += f"来自群>{group_info.group_name}({msg.group_id})<\n用户>{msg.sender.nickname}({msg.user_id})<"
+                await bot.api.post_group_msg(group_id=report_group_id, text=info_reply)
+                await bot.api.forward_group_single_msg(group_id=report_group_id, message_id=msg.message_id)

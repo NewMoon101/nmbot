@@ -11,7 +11,7 @@ from nm.core.msg import create_msg_db # 导入创建消息数据库的函数
 from nm.core.info import create_group_info_db # 导入创建群组信息数据库的函数
 from nm.command import command  # 导入命令处理函数
 from nm.utils.schedule import schedule_main  # 导入调度函数
-from nm.utils.master import report_ated, report_msg_private, report_poke, report_red_pocket  # 导入报告函数
+from nm.utils.master import report_ated, report_msg_private, report_poke, report_red_pocket, report_replied  # 导入报告函数
 
 from ncatbot.utils.config import config
 from ncatbot.core.client import BotClient

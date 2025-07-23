@@ -36,6 +36,12 @@ def get_msg_hash(msg: GroupMessage | PrivateMessage) -> bytes:
     msg_sha256 = get_hash256(msg_text.encode("utf-8"))
     return msg_sha256
 
+def get_msg_type(msg: GroupMessage | PrivateMessage) -> list[str]:
+    type_set = set()
+    for i in msg.message:
+        type_set.add(i["type"])
+    return list(type_set)
+
 def get_msg_at(msg: GroupMessage) -> list[str]:
     """
     獲取一條**群**消息中的at的QQ號
@@ -51,6 +57,14 @@ def get_msg_at(msg: GroupMessage) -> list[str]:
         else:
             continue
     return at_list
+
+def get_msg_reply(msg: GroupMessage) -> str:
+    reply_msg_id = ""
+    for i in msg.message:
+        if i["type"] == "reply":
+            reply_msg_id = i["data"]["id"]
+    return reply_msg_id
+
 
 def get_msg_text(msg: GroupMessage | PrivateMessage) -> str:
     """
