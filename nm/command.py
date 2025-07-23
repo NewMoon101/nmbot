@@ -6,7 +6,7 @@ import argparse
 from peewee import SqliteDatabase
 
 from nm.core.config import ConfigNm
-from nm.funclib.funclib import get_sysinfo
+from nm.funclib.funclib import get_sysinfo, NoExitArgumentParser
 from nm.funclib.ncfunclib import get_msg_text, get_msg_at
 from nm.core.info import update_group_info
 
@@ -23,12 +23,13 @@ async def command(bot: BotClient, msg: GroupMessage, config_nm: ConfigNm, logger
     """
     # master 命令
     if int(msg.user_id) in config_nm.master:
-        parser = argparse.ArgumentParser(description="NcatBot Command Parser", exit_on_error=False)
+        parser = NoExitArgumentParser(description="NcatBot Command Parser", exit_on_error=False)
         parser.add_argument("command", type=str, help="要執行的命令")
         if not get_msg_text(msg).strip(): # 如果消息文本為空，則不執行任何命令; 且防止parser解析出錯導致的sysexit
             return None
         try:
-            args = parser.parse_args(shlex.split(get_msg_text(msg).strip()))
+            tokens = shlex.split(get_msg_text(msg).strip())
+            args = parser.parse_args(tokens)
         except Exception as e:
             return
         else:

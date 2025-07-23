@@ -9,6 +9,7 @@ import signal
 import aiohttp
 import hashlib
 import asyncio
+import argparse
 from PIL import Image
 from io import BytesIO
 
@@ -123,3 +124,10 @@ def get_sysinfo() -> dict[str, float]:
     memory_info = psutil.virtual_memory()
     memory_usage = memory_info.percent
     return {"cpu_usage": cpu_usage, "memory_usage": memory_usage}
+
+class NoExitArgumentParser(argparse.ArgumentParser):
+    def exit(self): # type: ignore
+        pass
+
+    def error(self, message): # type: ignore
+        pass
