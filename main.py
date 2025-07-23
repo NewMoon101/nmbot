@@ -15,6 +15,7 @@ from nm.utils.schedule import schedule_main  # 导入调度函数
 from ncatbot.utils.config import config
 from ncatbot.core.client import BotClient
 from ncatbot.core.message import GroupMessage, PrivateMessage
+from ncatbot.core.notice import NoticeMessage
 from ncatbot.utils.logger import get_log
 
 parser = argparse.ArgumentParser(description="NcatBot Bot Client")
@@ -45,6 +46,10 @@ async def on_group_message(msg: GroupMessage):
 @bot.private_event()
 async def on_private_message(msg: PrivateMessage):
     logger.info(msg)
+
+@bot.notice_event()
+async def on_notice_message(msg: NoticeMessage):
+    pass
 
 if __name__ == "__main__":
     bot.run()
