@@ -7,8 +7,8 @@ from pathlib import Path # 引入Path类是为了适配不同系统的路径分�
 from peewee import SqliteDatabase
 
 from nm.core.config import ConfigNm
-from nm.core.msg import create_msg_db, msg_db_proxy  # 导入创建消息数据库的函数
-from nm.core.info import create_group_info_db, group_info_db_proxy  # 导入创建群组信息数据库的函数
+from nm.core.msg import create_msg_db # 导入创建消息数据库的函数
+from nm.core.info import create_group_info_db # 导入创建群组信息数据库的函数
 from nm.command import command  # 导入命令处理函数
 from nm.utils.schedule import schedule_main  # 导入调度函数
 
@@ -33,8 +33,13 @@ group_info_db = create_group_info_db(config_nm)  # 创建群组信息数据库
 bot = BotClient() # 创建BotClient
 logger = get_log() # 创建logger
 
+i = 0
 @bot.group_event()
 async def on_group_message(msg: GroupMessage):
+    global i
+    if i == 0:
+        i += 1
+        await schedule_main(bot, group_info_db, logger)
     await command(bot, msg, config_nm, logger, group_info_db)  # 调用命令处理函数
 
 @bot.private_event()
@@ -43,5 +48,3 @@ async def on_private_message(msg: PrivateMessage):
 
 if __name__ == "__main__":
     bot.run()
-    loop = asyncio.get_running_loop()
-    loop.create_task(schedule_main(bot, group_info_db, logger))
