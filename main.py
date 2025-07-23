@@ -42,7 +42,7 @@ async def on_group_message(msg: GroupMessage):
     if i == 0:
         i += 1
         await schedule_main(bot, group_info_db, logger)
-    await report_ated(msg, bot, config_nm, config_nm.devgroup, logger)
+    await report_ated(msg, bot, config_nm, config_nm.devgroup, logger, is_report_at_all=config_nm.is_report_at_all)
     await command(bot, msg, config_nm, logger, group_info_db)  # 调用命令处理函数
 
 @bot.private_event()

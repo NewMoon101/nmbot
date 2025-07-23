@@ -8,8 +8,12 @@ from ncatbot.core.client import BotClient
 from ncatbot.core.message import GroupMessage, PrivateMessage
 from ncatbot.core.notice import NoticeMessage
 
-async def report_ated(msg: GroupMessage, bot:BotClient, config_nm: ConfigNm, report_group_id: int, logger):
-    if config_nm.selfid in get_msg_at(msg):
+async def report_ated(msg: GroupMessage, bot:BotClient, config_nm: ConfigNm, report_group_id: int, logger, is_report_at_all=False):
+    flag_at_all = False
+    if is_report_at_all:
+        if "all" in get_msg_at(msg):
+            flag_at_all = True
+    if config_nm.selfid in get_msg_at(msg) or flag_at_all:
         logger.info(msg)
         group_info = get_group_info(msg.group_id)
         if group_info is None:

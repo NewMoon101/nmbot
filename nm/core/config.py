@@ -28,6 +28,7 @@ class ConfigNm:
             self.master: list[int] = config.get("master", [])
             self.selfid: str = config.get("bt_uin", "123456")
             self.devgroup: int = config.get("devgroup", 123456)
+            self.is_report_at_all: bool = config.get("report_at_all", False)
             self.db = self.DatabaseConfig(config.get("db", {}))
             self.db_local = self.LocalDatabaseConfig(config.get("db-local", {}), selfid=self.selfid)
             self.promote_group: list[int] = config.get("promotegroup", [])

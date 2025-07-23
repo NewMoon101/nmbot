@@ -43,6 +43,8 @@ master:
 
 devgroup: 123456 # 開發羣組
 
+report_at_all: False
+
 promotegroup:
     - 111111
     - 222222
