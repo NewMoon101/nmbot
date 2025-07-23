@@ -90,3 +90,53 @@ def get_group_info(group_id: int) -> GroupInfo | None:
             max_member_count=group_info.max_member_count,
             group_all_shut=group_info.group_all_shut
         )
+
+class UserInfo:
+
+    def __init__(self, user_id, uid, uin, nickname, age, qid, qqLevel, sex, long_nick, reg_time, is_vip, is_years_vip, vip_level, remark, status, login_days):
+        self.user_id = user_id
+        self.uid = uid
+        self.uin = uin
+        self.nickname = nickname
+        self.age = age
+        self.qid = qid
+        self.qqLevel = qqLevel
+        self.sex = sex
+        self.long_nick = long_nick
+        self.reg_time = reg_time
+        self.is_vip = is_vip
+        self.is_years_vip = is_years_vip
+        self.vip_level = vip_level
+        self.remark = remark # 备注, 无需上传至远程数据库
+        self.status = status
+        self.login_days = login_days
+
+async def get_user_info(bot: BotClient, user_id: int) -> UserInfo | None:
+    """
+    获取用户信息
+    Args:
+        user_id: 用户ID
+    Returns:
+        UserInfo对象或None
+    """
+    data = await bot.api.get_stranger_info(user_id=user_id)
+    data = data["data"]
+    user_info = UserInfo(
+        user_id=data["user_id"],
+        uid=data["uid"],
+        uin=data["uin"],
+        nickname=data["nickname"],
+        age=data["age"],
+        qid=data["qid"],
+        qqLevel=data["qqLevel"],
+        sex=data["sex"],
+        long_nick=data["long_nick"],
+        reg_time=data["reg_time"],
+        is_vip=data["is_vip"],
+        is_years_vip=data["is_years_vip"],
+        vip_level=data["vip_level"],
+        remark=data["remark"],
+        status=data["status"],
+        login_days=data["login_days"]
+    )
+    return user_info
