@@ -25,24 +25,25 @@ async def report_msg_private(msg: PrivateMessage, bot: BotClient, config_nm: Con
     await bot.api.forward_group_single_msg(group_id=report_group_id, message_id=msg.message_id)
 
 async def report_poke(msg: NoticeMessage, bot: BotClient, config_nm: ConfigNm, report_group_id: int, logger):
-    if config_nm.selfid == str(msg["target_id"]): #notice类未被解析, 目前是dict, 见ncatbot的issue https://github.com/liyihao1110/ncatbot/issues/171 #type: ignore
-        msg = NoticeMessage(msg)  #type: ignore
-        info_reply = f"戳一戳:\n"
-        if msg.group_id:
-            group_info = get_group_info(msg.group_id)
-            if group_info is None:
-                logger.error(f"群组信息获取失败: {msg.group_id}")
-                pass
-            else:
-                info_reply += f"来自>{group_info.group_name}({msg.group_id})<\n"
-        if not msg.user_id:
-            logger.error("用户ID获取失败")
-            return
-        user_info = await get_user_info(bot, msg.user_id)
-        if user_info is None:
-            logger.error(f"用户信息获取失败: {msg.user_id}")
-            info_reply += f"用户>?({msg.user_id})<"
-        else:
-            info_reply += f"用户>{user_info.nickname}({user_info.user_id})<"
-        await bot.api.post_group_msg(group_id=report_group_id, text=info_reply)
-
+    if msg["notice_type"] == "notify": #type: ignore
+        if msg["sub_type"] == "poke": # type: ignore
+            if config_nm.selfid == str(msg["target_id"]): #notice类未被解析, 目前是dict, 见ncatbot的issue https://github.com/liyihao1110/ncatbot/issues/171 #type: ignore
+                msg = NoticeMessage(msg)  #type: ignore
+                info_reply = f"戳一戳:\n"
+                if msg.group_id:
+                    group_info = get_group_info(msg.group_id)
+                    if group_info is None:
+                        logger.error(f"群组信息获取失败: {msg.group_id}")
+                        pass
+                    else:
+                        info_reply += f"来自>{group_info.group_name}({msg.group_id})<\n"
+                if not msg.user_id:
+                    logger.error("用户ID获取失败")
+                    return
+                user_info = await get_user_info(bot, msg.user_id)
+                if user_info is None:
+                    logger.error(f"用户信息获取失败: {msg.user_id}")
+                    info_reply += f"用户>?({msg.user_id})<"
+                else:
+                    info_reply += f"用户>{user_info.nickname}({user_info.user_id})<"
+                await bot.api.post_group_msg(group_id=report_group_id, text=info_reply)
