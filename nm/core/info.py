@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import json
 from pathlib import Path
 from peewee import SqliteDatabase, Model, IntegerField, TextField, AutoField, Proxy
 
@@ -47,7 +48,7 @@ class GroupInfo:
 
 async def get_group_list(bot: BotClient) -> list[dict]:
     data = await bot.api.get_group_list(no_cache=True)
-    return data
+    return json.loads(data)
 
 def save_group_info(group_list: list[dict], group_info_db: SqliteDatabase):
     with group_info_db.atomic():
