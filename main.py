@@ -11,6 +11,7 @@ from nm.core.msg import create_msg_db # 导入创建消息数据库的函数
 from nm.core.info import create_group_info_db # 导入创建群组信息数据库的函数
 from nm.command import command  # 导入命令处理函数
 from nm.utils.schedule import schedule_main  # 导入调度函数
+from nm.utils.master import report_ated, report_msg_private, report_poke  # 导入报告函数
 
 from ncatbot.utils.config import config
 from ncatbot.core.client import BotClient
@@ -41,15 +42,17 @@ async def on_group_message(msg: GroupMessage):
     if i == 0:
         i += 1
         await schedule_main(bot, group_info_db, logger)
+    await report_ated(msg, bot, config_nm, config_nm.devgroup, logger)
     await command(bot, msg, config_nm, logger, group_info_db)  # 调用命令处理函数
 
 @bot.private_event()
 async def on_private_message(msg: PrivateMessage):
     logger.info(msg)
+    await report_msg_private(msg, bot, config_nm, config_nm.devgroup, logger)
 
 @bot.notice_event()
 async def on_notice_message(msg: NoticeMessage):
-    pass
+    await report_poke(msg, bot, config_nm, config_nm.devgroup, logger)
 
 if __name__ == "__main__":
     bot.run()
