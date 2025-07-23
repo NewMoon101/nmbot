@@ -53,16 +53,15 @@ def save_group_info(group_list: list[dict], group_info_db: SqliteDatabase):
     with group_info_db.atomic():
         for group in group_list:
             # 如果群组已存在，则更新信息
-            if GroupInfoDb.select().where(GroupInfoDb.group_id == group["id"]).exists():
+            if GroupInfoDb.select().where(GroupInfoDb.group_id == group["group_id"]).exists():
                 GroupInfoDb.update(
                     group_all_shut=group["group_all_shut"],
                     group_name=group["group_name"],
                     member_count=group["member_count"],
                     max_member_count=group["max_member_count"]
-                ).where(GroupInfoDb.group_id == group["id"]).execute()
+                ).where(GroupInfoDb.group_id == group["group_id"]).execute()
             else:
                 GroupInfoDb.create(
-                    id=group["id"],
                     group_all_shut=group["group_all_shut"],
                     group_id=group["group_id"],
                     group_name=group["group_name"],
