@@ -19,7 +19,7 @@ async def report_ated(msg: GroupMessage, bot:BotClient, config_nm: ConfigNm, rep
         if group_info is None:
             logger.error(f"群组信息获取失败: {msg.group_id}")
             return
-        info_reply = f"群消息:\n来自>{group_info.group_name}({group_info.group_id})<\n用户>{msg.sender.nickname}({msg.user_id})<"
+        info_reply = f"群消息:\n来自群>{group_info.group_name}({group_info.group_id})<\n用户>{msg.sender.nickname}({msg.user_id})<"
         await bot.api.post_group_msg(group_id=report_group_id, text=info_reply)
         await bot.api.forward_group_single_msg(group_id=report_group_id, message_id=msg.message_id)
 
@@ -40,7 +40,7 @@ async def report_poke(msg: NoticeMessage, bot: BotClient, config_nm: ConfigNm, r
                         logger.error(f"群组信息获取失败: {msg.group_id}")
                         pass
                     else:
-                        info_reply += f"来自>{group_info.group_name}({msg.group_id})<\n"
+                        info_reply += f"来自群>{group_info.group_name}({msg.group_id})<\n"
                 if not msg.user_id:
                     logger.error("用户ID获取失败")
                     return
@@ -51,3 +51,12 @@ async def report_poke(msg: NoticeMessage, bot: BotClient, config_nm: ConfigNm, r
                 else:
                     info_reply += f"用户>{user_info.nickname}({user_info.user_id})<"
                 await bot.api.post_group_msg(group_id=report_group_id, text=info_reply)
+
+async def report_red_pocket(msg: GroupMessage, bot: BotClient, config_nm: ConfigNm, report_group_id: int, logger): # 因完全无法解析红包相关内容, 以下所有判定方式均是猜测
+    if msg.raw_message == "" and msg.message == [] and msg.message_format == "array" and msg.post_type == "message":
+        group_info = get_group_info(msg.group_id)
+        if group_info is None:
+            logger.error(f"群组信息获取失败: {msg.group_id}")
+            return
+        info_reply = f"无内容的群消息:\n来自>{group_info.group_name}({msg.group_id})<"
+        await bot.api.post_group_msg(group_id=report_group_id, text=info_reply)
