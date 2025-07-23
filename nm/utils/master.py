@@ -19,7 +19,7 @@ async def report_ated(msg: GroupMessage, bot:BotClient, config_nm: ConfigNm, rep
         if group_info is None:
             logger.error(f"群组信息获取失败: {msg.group_id}")
             return
-        info_reply = f"群消息:\n来自群>{group_info.group_name}({group_info.group_id})<\n用户>{msg.sender.nickname}({msg.user_id})<"
+        info_reply = f"群消息:\n来自群>{group_info.group_name}({msg.group_id})<\n用户>{msg.sender.nickname}({msg.user_id})<"
         await bot.api.post_group_msg(group_id=report_group_id, text=info_reply)
         await bot.api.forward_group_single_msg(group_id=report_group_id, message_id=msg.message_id)
 
