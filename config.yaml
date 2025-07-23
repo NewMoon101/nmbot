@@ -43,6 +43,15 @@ master:
 
 devgroup: 123456 # 開發羣組
 
+function_open:
+  command: False
+  report:
+    ated: False # 是否需要上报at all在下面
+    private_msg: False
+    poke: False
+    red_pocket: False
+    replied: False
+
 report_at_all: False
 
 promotegroup:

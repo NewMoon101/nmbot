@@ -42,18 +42,25 @@ async def on_group_message(msg: GroupMessage):
     if i == 0:
         i += 1
         await schedule_main(bot, group_info_db, logger)
-    await report_ated(msg, bot, config_nm, config_nm.devgroup, logger, is_report_at_all=config_nm.is_report_at_all)
-    await report_red_pocket(msg, bot, config_nm, config_nm.devgroup, logger)
-    await command(bot, msg, config_nm, logger, group_info_db)  # 调用命令处理函数
+    if config_nm.function_open.report.ated:
+        await report_ated(msg, bot, config_nm, config_nm.devgroup, logger, is_report_at_all=config_nm.is_report_at_all)
+    if config_nm.function_open.report.replied:
+        await report_replied(msg, bot, config_nm, config_nm.devgroup, logger)
+    if config_nm.function_open.report.red_pocket:
+        await report_red_pocket(msg, bot, config_nm, config_nm.devgroup, logger)
+    if config_nm.function_open.command:
+        await command(bot, msg, config_nm, logger, group_info_db)  # 调用命令处理函数
 
 @bot.private_event()
 async def on_private_message(msg: PrivateMessage):
     logger.info(msg)
-    await report_msg_private(msg, bot, config_nm, config_nm.devgroup, logger)
+    if config_nm.function_open.report.private_msg:
+        await report_msg_private(msg, bot, config_nm, config_nm.devgroup, logger)
 
 @bot.notice_event()
 async def on_notice_message(msg: NoticeMessage):
-    await report_poke(msg, bot, config_nm, config_nm.devgroup, logger)
+    if config_nm.function_open.report.poke:
+        await report_poke(msg, bot, config_nm, config_nm.devgroup, logger)
 
 if __name__ == "__main__":
     bot.run()
