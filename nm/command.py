@@ -23,7 +23,7 @@ async def command(bot: BotClient, msg: GroupMessage, config_nm: ConfigNm, logger
     """
     # master 命令
     if int(msg.user_id) in config_nm.master:
-        parser = argparse.ArgumentParser(description="NcatBot Command Parser")
+        parser = argparse.ArgumentParser(description="NcatBot Command Parser", exit_on_error=False)
         parser.add_argument("command", type=str, help="要執行的命令")
         if not get_msg_text(msg).strip(): # 如果消息文本為空，則不執行任何命令; 且防止parser解析出錯導致的sysexit
             return None
