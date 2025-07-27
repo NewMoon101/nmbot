@@ -43,7 +43,7 @@ async def on_group_message(msg: GroupMessage):
         i += 1
         await schedule_main(bot, group_info_db, logger)
     if config_nm.function_open.report.ated:
-        await report_ated(msg, bot, config_nm, config_nm.devgroup, logger, is_report_at_all=config_nm.is_report_at_all)
+        await report_ated(msg, bot, config_nm, config_nm.devgroup, logger, is_report_at_all=config_nm.function_open.report.at_all)
     if config_nm.function_open.report.replied:
         await report_replied(msg, bot, config_nm, config_nm.devgroup, logger)
     if config_nm.function_open.report.red_pocket:

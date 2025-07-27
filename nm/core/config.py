@@ -26,6 +26,7 @@ class ConfigNm:
         class ReportConfig:
             def __init__(self, func_open_report_config: dict):
                 self.ated: bool = func_open_report_config.get("ated", False)
+                self.at_all: bool = func_open_report_config.get("at_all", False)
                 self.private_msg: bool = func_open_report_config.get("private_msg", False)
                 self.poke: bool = func_open_report_config.get("poke", False)
                 self.red_pocket: bool = func_open_report_config.get("red_pocket", False)
@@ -43,7 +44,6 @@ class ConfigNm:
             self.selfid: str = config.get("bt_uin", "123456")
             self.devgroup: int = config.get("devgroup", 123456)
             self.function_open = self.FunctionOpenConfig(config.get("function_open", {}))
-            self.is_report_at_all: bool = config.get("report_at_all", False)
             self.db = self.DatabaseConfig(config.get("db", {}))
             self.db_local = self.LocalDatabaseConfig(config.get("db-local", {}), selfid=self.selfid)
             self.promote_group: list[int] = config.get("promotegroup", [])
