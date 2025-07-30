@@ -9,6 +9,16 @@ from ncatbot.core.message import GroupMessage, PrivateMessage
 from ncatbot.core.notice import NoticeMessage
 
 async def report_ated(msg: GroupMessage, bot:BotClient, config_nm: ConfigNm, report_group_id: int, logger, is_report_at_all=False):
+    """
+    上报被@的群消息
+    Args:
+        msg: 群消息
+        bot: Bot客户端
+        config_nm: 配置对象
+        report_group_id: 上报的群ID
+        logger: 日志记录器
+        is_report_at_all: 是否上报@全体成员的消息
+    """
     flag_at_all = False
     if is_report_at_all:
         if "all" in get_msg_at(msg):
@@ -24,11 +34,26 @@ async def report_ated(msg: GroupMessage, bot:BotClient, config_nm: ConfigNm, rep
         await bot.api.forward_group_single_msg(group_id=report_group_id, message_id=msg.message_id)
 
 async def report_msg_private(msg: PrivateMessage, bot: BotClient, config_nm: ConfigNm, report_group_id: int, logger):
+    """上报私聊消息
+    Args:
+        msg: 私聊消息
+        bot: Bot客户端
+        config_nm: 配置对象
+        report_group_id: 上报的群ID
+        logger: 日志记录器
+    """
     info_reply = f"私聊消息:\n来自>{msg.sender.nickname}({msg.user_id})<"
     await bot.api.post_group_msg(group_id=report_group_id, text=info_reply)
     await bot.api.forward_group_single_msg(group_id=report_group_id, message_id=msg.message_id)
 
 async def report_poke(msg: NoticeMessage, bot: BotClient, config_nm: ConfigNm, report_group_id: int, logger):
+    """ 上报戳一戳消息
+    Args:
+        msg: NoticeMessage对象
+        bot: Bot客户端
+        config_nm: 配置对象
+        report_group_id: 上报的群ID
+        logger: 日志记录器"""
     if msg["notice_type"] == "notify": #type: ignore
         if msg["sub_type"] == "poke": # type: ignore
             if config_nm.selfid == str(msg["target_id"]): #notice类未被解析, 目前是dict, 见ncatbot的issue https://github.com/liyihao1110/ncatbot/issues/171 #type: ignore

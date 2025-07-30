@@ -37,6 +37,12 @@ def get_msg_hash(msg: GroupMessage | PrivateMessage) -> bytes:
     return msg_sha256
 
 def get_msg_type(msg: GroupMessage | PrivateMessage) -> list[str]:
+    """
+    獲取一條消息中所有類型的消息段
+    Args:
+        msg: 消息
+    Returns:
+        消息段類型列表"""
     type_set = set()
     for i in msg.message:
         type_set.add(i["type"])
@@ -59,6 +65,13 @@ def get_msg_at(msg: GroupMessage) -> list[str]:
     return at_list
 
 def get_msg_reply(msg: GroupMessage) -> str:
+    """
+    獲取一條**群**消息中的reply的消息ID
+    Args:
+        msg: 一條群消息
+    Returns:
+        reply的消息ID
+    """
     reply_msg_id = ""
     for i in msg.message:
         if i["type"] == "reply":
