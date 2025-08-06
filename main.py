@@ -37,13 +37,16 @@ group_info_db = create_group_info_db(config_nm)  # 创建群组信息数据库
 bot = BotClient() # 创建BotClient
 logger = get_log() # 创建logger
 
-i = 0
+global_init = 0
 @bot.group_event()
 async def on_group_message(msg: GroupMessage):
-    global i
-    if i == 0:
-        i += 1
-        await schedule_main(bot, group_info_db, logger)
+    # 这里是初始化
+    global global_init
+    if global_init == 0:
+        global_init += 1
+        asyncio.create_task(schedule_main(bot, group_info_db, logger))
+        if config_nm.function_open.promote:
+            init_promote_config(config_nm, logger)
     if config_nm.function_open.report.ated:
         await report_ated(msg, bot, config_nm, config_nm.devgroup, logger, is_report_at_all=config_nm.function_open.report.at_all)
     if config_nm.function_open.report.replied:
