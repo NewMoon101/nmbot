@@ -38,7 +38,7 @@ def get_msg_hash(msg: GroupMessage | PrivateMessage) -> bytes:
 
 def get_msg_type(msg: GroupMessage | PrivateMessage) -> list[str]:
     """
-    獲取一條消息中所有類型的消息段
+    獲取一條消息中所有消息段的類型
     Args:
         msg: 消息
     Returns:
