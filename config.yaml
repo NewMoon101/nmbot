@@ -52,11 +52,7 @@ function_open:
     poke: False
     red_pocket: False
     replied: False
-
-promotegroup:
-    - 111111
-    - 222222
-    - 333333
+  promote: False
 
 db:
   type: "postgres"  # 数据库类型

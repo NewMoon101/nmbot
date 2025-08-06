@@ -35,6 +35,7 @@ class ConfigNm:
         def __init__(self, function_open_config: dict):
             self.report = self.ReportConfig(function_open_config.get("report", {}))
             self.command = function_open_config.get("command", False)
+            self.promote = function_open_config.get("promote", False)
 
     def __init__(self, path: str):
         with open(path, mode="r", encoding="utf-8") as config_file:
@@ -46,4 +47,3 @@ class ConfigNm:
             self.function_open = self.FunctionOpenConfig(config.get("function_open", {}))
             self.db = self.DatabaseConfig(config.get("db", {}))
             self.db_local = self.LocalDatabaseConfig(config.get("db-local", {}), selfid=self.selfid)
-            self.promote_group: list[int] = config.get("promotegroup", [])
