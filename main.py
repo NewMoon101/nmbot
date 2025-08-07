@@ -11,7 +11,7 @@ from nm.core.msg import create_msg_db # 导入创建消息数据库的函数
 from nm.core.info import create_group_info_db # 导入创建群组信息数据库的函数
 from nm.command import command  # 导入命令处理函数
 from nm.utils.schedule import schedule_main  # 导入调度函数
-from nm.utils.promote import init_promote_config
+from nm.utils.promote import init_promote_config, PromoteConfig
 from nm.utils.master import report_ated, report_msg_private, report_poke, report_red_pocket, report_replied  # 导入报告函数
 
 from ncatbot.utils.config import config
@@ -43,10 +43,15 @@ async def on_group_message(msg: GroupMessage):
     # 这里是初始化
     global global_init
     if global_init == 0:
+        logger.info("進行某些初始化")
         global_init += 1
         asyncio.create_task(schedule_main(bot, group_info_db, logger))
         if config_nm.function_open.promote:
             init_promote_config(config_nm, logger)
+            global promote_config
+            promote_config = PromoteConfig(config_nm)
+            global config_nm
+            config_nm.promote_config = promote_config # type: ignore
     if config_nm.function_open.report.ated:
         await report_ated(msg, bot, config_nm, config_nm.devgroup, logger, is_report_at_all=config_nm.function_open.report.at_all)
     if config_nm.function_open.report.replied:
