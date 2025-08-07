@@ -14,6 +14,11 @@ from nm.utils.promote import promote_t
 from ncatbot.core import BotClient
 from ncatbot.core.message import GroupMessage
 
+help_text = """
+使用 help 唤出此列表
+
+""" # TODO: 编写帮助列表
+
 async def command(bot: BotClient, msg: GroupMessage, config_nm: ConfigNm, logger, group_info_db: SqliteDatabase) -> None:
     """全部聊天內命令入口
     Args:
