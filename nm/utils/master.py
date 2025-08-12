@@ -31,7 +31,7 @@ async def report_ated(msg: GroupMessage, bot:BotClient, config_nm: ConfigNm, rep
             return
         info_reply = f"群消息:\n来自群>{group_info.group_name}({msg.group_id})<\n用户>{msg.sender.nickname}({msg.user_id})<"
         await bot.api.post_group_msg(group_id=report_group_id, text=info_reply)
-        await bot.api.forward_group_single_msg(group_id=report_group_id, message_id=msg.message_id)
+        await bot.api.forward_group_single_msg(group_id=report_group_id, message_id=str(msg.message_id))
 
 async def report_msg_private(msg: PrivateMessage, bot: BotClient, config_nm: ConfigNm, report_group_id: int, logger):
     """上报私聊消息
@@ -44,7 +44,7 @@ async def report_msg_private(msg: PrivateMessage, bot: BotClient, config_nm: Con
     """
     info_reply = f"私聊消息:\n来自>{msg.sender.nickname}({msg.user_id})<"
     await bot.api.post_group_msg(group_id=report_group_id, text=info_reply)
-    await bot.api.forward_group_single_msg(group_id=report_group_id, message_id=msg.message_id)
+    await bot.api.forward_group_single_msg(group_id=report_group_id, message_id=str(msg.message_id))
 
 async def report_poke(msg: NoticeMessage, bot: BotClient, config_nm: ConfigNm, report_group_id: int, logger):
     """ 上报戳一戳消息
@@ -104,4 +104,4 @@ async def report_replied(msg: GroupMessage, bot: BotClient, config_nm: ConfigNm,
                     return
                 info_reply += f"来自群>{group_info.group_name}({msg.group_id})<\n用户>{msg.sender.nickname}({msg.user_id})<"
                 await bot.api.post_group_msg(group_id=report_group_id, text=info_reply)
-                await bot.api.forward_group_single_msg(group_id=report_group_id, message_id=msg.message_id)
+                await bot.api.forward_group_single_msg(group_id=report_group_id, message_id=str(msg.message_id))
