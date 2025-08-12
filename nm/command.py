@@ -46,7 +46,7 @@ async def command(bot: BotClient, msg: GroupMessage, config_nm: ConfigNm, logger
                     await bot.api.post_group_msg(group_id=msg.group_id, text=f"系統信息: {sysinfo}")
                     return
                 elif args.command == "help":
-                    await bot.api.post_group_msg(group_id=msg.group_id, text="可用命令: sysinfo, help")
+                    await bot.api.post_group_msg(group_id=msg.group_id, text=help_text)
                     return
                 elif args.command == "update":
                     parser.add_argument("-m", "--module", type=str, help="要更新的模塊")
