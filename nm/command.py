@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import shlex
-import argparse
 
 from peewee import SqliteDatabase
 

@@ -8,8 +8,7 @@ from ncatbot.core.message import GroupMessage
 
 from nm.core.config import ConfigNm
 from nm.funclib.funclib import sleep_random_async
-from nm.funclib.ncfunclib import get_msg_at, get_msg_type, get_msg_reply
-from nm.core.info import get_group_info
+from nm.funclib.ncfunclib import get_msg_reply
 
 def init_promote_config(config_nm: ConfigNm, logger):
     config_path = Path(".", "data", f"qq{config_nm.selfid}", "promote_config.json")

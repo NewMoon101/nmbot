@@ -4,7 +4,6 @@ import asyncio
 import argparse
 
 from pathlib import Path # 引入Path类是为了适配不同系统的路径分隔符不同(windows\linux/)
-from peewee import SqliteDatabase
 
 from nm.core.config import ConfigNm
 from nm.core.msg import create_msg_db # 导入创建消息数据库的函数

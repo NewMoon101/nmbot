@@ -10,8 +10,6 @@ import aiohttp
 import hashlib
 import asyncio
 import argparse
-from PIL import Image
-from io import BytesIO
 
 import psutil
 
