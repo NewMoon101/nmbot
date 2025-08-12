@@ -46,11 +46,11 @@ async def on_group_message(msg: GroupMessage):
         logger.info("進行某些初始化")
         global_init += 1
         asyncio.create_task(schedule_main(bot, group_info_db, logger))
+        global config_nm
         if config_nm.function_open.promote:
             init_promote_config(config_nm, logger)
             global promote_config
             promote_config = PromoteConfig(config_nm)
-            global config_nm
             config_nm.promote_config = promote_config # type: ignore
     if config_nm.function_open.report.ated:
         await report_ated(msg, bot, config_nm, config_nm.devgroup, logger, is_report_at_all=config_nm.function_open.report.at_all)
