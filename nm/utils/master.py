@@ -91,7 +91,7 @@ async def report_replied(msg: GroupMessage, bot: BotClient, config_nm: ConfigNm,
         msg_id = get_msg_reply(msg)
         try:
             replied_msg_data: dict = await bot.api.get_msg(message_id=msg_id)
-            replied_user_id: int = replied_msg_data.get("user_id", 0)
+            replied_user_id: int = replied_msg_data["data"].get("user_id", 0)
         except Exception as e:
             logger.info(e)
         else:
