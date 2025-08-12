@@ -37,13 +37,13 @@ group_info_db = create_group_info_db(config_nm)  # 创建群组信息数据库
 bot = BotClient() # 创建BotClient
 logger = get_log() # 创建logger
 
+# 这里是初始化
 global_init = 0
 @bot.group_event()
-async def on_group_message(msg: GroupMessage):
-    # 这里是初始化
+async def init_during_group_event(msg: GroupMessage):
     global global_init
     if global_init == 0:
-        logger.info("進行某些初始化")
+        logger.info("進行定時任務和宣發初始化")
         global_init += 1
         asyncio.create_task(schedule_main(bot, group_info_db, logger))
         global config_nm
@@ -52,24 +52,36 @@ async def on_group_message(msg: GroupMessage):
             global promote_config
             promote_config = PromoteConfig(config_nm)
             config_nm.promote_config = promote_config # type: ignore
-    if config_nm.function_open.report.ated:
+
+# 以下 group event
+if config_nm.function_open.report.ated:
+    @bot.group_event()
+    async def on_ated(msg: GroupMessage):
         await report_ated(msg, bot, config_nm, config_nm.devgroup, logger, is_report_at_all=config_nm.function_open.report.at_all)
-    if config_nm.function_open.report.replied:
+
+if config_nm.function_open.report.replied:
+    @bot.group_event()
+    async def on_replied(msg: GroupMessage):
         await report_replied(msg, bot, config_nm, config_nm.devgroup, logger)
-    if config_nm.function_open.report.red_pocket:
+if config_nm.function_open.report.red_pocket:
+    @bot.group_event()
+    async def on_red_pocket(msg: GroupMessage):
         await report_red_pocket(msg, bot, config_nm, config_nm.devgroup, logger)
-    if config_nm.function_open.command:
+if config_nm.function_open.command:
+    @bot.group_event()
+    async def on_command(msg: GroupMessage):
         await command(bot, msg, config_nm, logger, group_info_db)  # 调用命令处理函数
 
-@bot.private_event()
-async def on_private_message(msg: PrivateMessage):
-    logger.info(msg)
-    if config_nm.function_open.report.private_msg:
+# 以下 private event
+if config_nm.function_open.report.private_msg:
+    @bot.private_event()
+    async def on_private_message_(msg: PrivateMessage):
         await report_msg_private(msg, bot, config_nm, config_nm.devgroup, logger)
 
-@bot.notice_event()
-async def on_notice_message(msg: NoticeMessage):
-    if config_nm.function_open.report.poke:
+# 以下 notice event
+if config_nm.function_open.report.poke:
+    @bot.notice_event()
+    async def on_poked(msg: NoticeMessage):
         await report_poke(msg, bot, config_nm, config_nm.devgroup, logger)
 
 if __name__ == "__main__":
