@@ -58,11 +58,12 @@ async def command(bot: BotClient, msg: GroupMessage, config_nm: ConfigNm, logger
                         return
                     return
                 elif args.command == "宣发":
-                    if not "reply" in get_msg_type(msg):
-                        logger.warning(f"消息{msg.message_id}不含reply消息段, 无法宣发")
-                        return
-                    else:
-                        await promote_t(bot, msg, config_nm, logger)
-                        return
+                    if config_nm.function_open.promote == True:
+                        if not "reply" in get_msg_type(msg):
+                            logger.warning(f"消息{msg.message_id}不含reply消息段, 无法宣发")
+                            return
+                        else:
+                            await promote_t(bot, msg, config_nm, logger)
+                            return
             else:
                 pass
