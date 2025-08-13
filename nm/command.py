@@ -41,7 +41,7 @@ async def command(bot: BotClient, msg: GroupMessage, config_nm: ConfigNm, logger
             if len(get_msg_at(msg)) == 0 or (config_nm.selfid in get_msg_at(msg) and (len(get_msg_at(msg)) == 1)): # 如果沒被@, 直接執行; 如果被@了, 只有只@了bot纔能執行
                 if args.command == "sysinfo":
                     sysinfo = get_sysinfo()
-                    logger.info(f"系統信息: {sysinfo}")
+                    logger.info(f"(bot:{config_nm.selfid}) 系統信息: {sysinfo}")
                     await bot.api.post_group_msg(group_id=msg.group_id, text=f"系統信息: {sysinfo}")
                     return
                 elif args.command == "help":
@@ -59,7 +59,7 @@ async def command(bot: BotClient, msg: GroupMessage, config_nm: ConfigNm, logger
                 elif args.command == "宣发":
                     if config_nm.function_open.promote == True:
                         if not "reply" in get_msg_type(msg):
-                            logger.warning(f"消息{msg.message_id}不含reply消息段, 无法宣发")
+                            logger.warning(f"(bot:{config_nm.selfid}) 消息{msg.message_id}不含reply消息段, 无法宣发")
                             return
                         else:
                             await promote_t(bot, msg, config_nm, logger)

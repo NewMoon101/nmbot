@@ -27,7 +27,7 @@ async def report_ated(msg: GroupMessage, bot:BotClient, config_nm: ConfigNm, rep
         logger.info(msg)
         group_info = get_group_info(msg.group_id)
         if group_info is None:
-            logger.error(f"群组信息获取失败: {msg.group_id}")
+            logger.warning(f"(bot:{config_nm.selfid}) 群组信息获取失败: {msg.group_id}")
             info_reply = f"群消息:\n来自群>未取得群名({msg.group_id})<\n用户>{msg.sender.nickname}({msg.user_id})<"""
         else:
             info_reply = f"群消息:\n来自群>{group_info.group_name}({msg.group_id})<\n用户>{msg.sender.nickname}({msg.user_id})<"
@@ -63,18 +63,18 @@ async def report_poke(msg: NoticeMessage, bot: BotClient, config_nm: ConfigNm, r
                 if msg.group_id:
                     group_info = get_group_info(msg.group_id)
                     if group_info is None:
-                        logger.error(f"群组信息获取失败: {msg.group_id}")
+                        logger.warning(f"(bot:{config_nm.selfid}) 群组信息获取失败: {msg.group_id}")
                         info_reply += f"来自群>未取得群名({msg.group_id})<\n"
                     else:
                         info_reply += f"来自群>{group_info.group_name}({msg.group_id})<\n"
                 if not msg.user_id:
                     # 这条分支用于解决静态类型检查, 实际上基本不会出现msg不带user_id的情况, 故随便写了.
-                    logger.error("用户ID获取失败")
+                    logger.warning(f"(bot:{config_nm.selfid}) 用户ID获取失败")
                     msg.user_id = 10000
                 user_info = await get_user_info(bot, msg.user_id)
                 if user_info is None:
                     # 同上, 类型检查, 实际不出现
-                    logger.error(f"用户信息获取失败: {msg.user_id}")
+                    logger.warning(f"(bot:{config_nm.selfid}) 用户信息获取失败: {msg.user_id}")
                     info_reply += f"用户>未取得用户名({msg.user_id})<"
                 else:
                     info_reply += f"用户>{user_info.nickname}({user_info.user_id})<"
@@ -84,7 +84,7 @@ async def report_red_pocket(msg: GroupMessage, bot: BotClient, config_nm: Config
     if msg.raw_message == "" and msg.message == [] and msg.message_format == "array" and msg.post_type == "message":
         group_info = get_group_info(msg.group_id)
         if group_info is None:
-            logger.error(f"群组信息获取失败: {msg.group_id}")
+            logger.warning(f"(bot:{config_nm.selfid}) 群组信息获取失败: {msg.group_id}")
             info_reply = f"无内容的群消息:\n来自>未取得群名({msg.group_id})<"
         else:
             info_reply = f"无内容的群消息:\n来自>{group_info.group_name}({msg.group_id})<"
@@ -104,7 +104,7 @@ async def report_replied(msg: GroupMessage, bot: BotClient, config_nm: ConfigNm,
                 logger.info(msg)
                 group_info = get_group_info(msg.group_id)
                 if group_info is None:
-                    logger.error(f"群组信息获取失败: {msg.group_id}")
+                    logger.warning(f"(bot:{config_nm.selfid}) 群组信息获取失败: {msg.group_id}")
                     info_reply += f"来自群>未取得群名({msg.group_id})<\n用户>{msg.sender.nickname}({msg.user_id})<"
                 else:
                     info_reply += f"来自群>{group_info.group_name}({msg.group_id})<\n用户>{msg.sender.nickname}({msg.user_id})<"
