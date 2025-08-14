@@ -53,6 +53,7 @@ async def command(bot: BotClient, msg: GroupMessage, config_nm: ConfigNm, logger
                     if args.module:
                         if args.module == "group_info":
                             await update_group_info(bot, group_info_db, logger)
+                            await bot.api.post_group_msg(group_id=msg.group_id, text="已更新")
                             return
                         return
                     return
