@@ -90,17 +90,16 @@ class PromoteConfig:
         activetag = self.get_activetag()
         tag_mode = activetag["mode"]
         if tag_mode == "white":
-            tag_mode = "black"
+            activetag["mode"] = "black"
             self.update_config_file(config_nm, logger)
         elif tag_mode == "black":
-            tag_mode = "white"
+            activetag["mode"] = "white"
             self.update_config_file(config_nm, logger)
 
     def change_activetag_mode_to(self, mode: str, config_nm: ConfigNm, logger):
         activetag = self.get_activetag()
-        tag_mode = activetag["mode"]
         if mode in ["white", "black"]:
-            tag_mode = mode
+            activetag["mode"] = mode
 
     def change_activetag(self, tag_name: str, config_nm: ConfigNm, logger):
         tag_list = self.get_tag_list()
@@ -117,13 +116,15 @@ class PromoteConfig:
     def add_group_to_activetag(self, group_list: list[int], config_nm: ConfigNm, logger):
         pre_group_list = self.get_active_tag_group_list()
         new_group_list = list(set(pre_group_list).union(set(group_list)))
-        pre_group_list = new_group_list
+        activetag = self.get_activetag()
+        activetag["list"] = new_group_list
         self.update_config_file(config_nm, logger)
 
     def del_group_from_activetag(self, group_list: list[int], config_nm: ConfigNm, logger):
         pre_group_list = self.get_active_tag_group_list()
         new_group_list = list(set(pre_group_list) - (set(group_list)))
-        pre_group_list = new_group_list
+        activetag = self.get_activetag()
+        activetag["list"] = new_group_list
         self.update_config_file(config_nm, logger)
 
 async def get_group_id_list(bot: BotClient) -> list[int]:
