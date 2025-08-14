@@ -76,8 +76,6 @@ async def command(bot: BotClient, msg: GroupMessage, config_nm: ConfigNm, logger
                         args = parser.parse_args(shlex.split(get_msg_text(msg)))
                         if args.tag:
                             await add_tag(bot, msg, args.tag, config_nm, logger)
-                            await bot.api.post_group_msg(group_id=msg.group_id, text=f"已添加tag: {args.tag}")
-                            logger.info(f"(bot:{config_nm.selfid}) 添加tag: {args.tag}")
                             return
                 elif args.command == "删除标签":
                     if config_nm.function_open.promote == True:
@@ -85,16 +83,12 @@ async def command(bot: BotClient, msg: GroupMessage, config_nm: ConfigNm, logger
                         args = parser.parse_args(shlex.split(get_msg_text(msg)))
                         if args.tag:
                             await del_tag(bot, msg, args.tag, config_nm, logger)
-                            await bot.api.post_group_msg(group_id=msg.group_id, text=f"已删除tag: {args.tag}")
-                            logger.info(f"(bot:{config_nm.selfid}) 删除tag: {args.tag}")
                             return
                 elif args.command == "切换标签":
                     if config_nm.function_open.promote == True:
                         parser.add_argument("tag", type=str, help="要修改的tag")
                         args = parser.parse_args(shlex.split(get_msg_text(msg)))
                         await change_tag(bot, msg,  args.tag, config_nm, logger)
-                        await bot.api.post_group_msg(group_id=msg.group_id, text=f"已修改tag至{args.tag}")
-                        logger.info(f"(bot:{config_nm.selfid}) 修改tag: {args.tag}")
                         return
                 elif args.command == "切换模式":
                     if config_nm.function_open.promote == True:
@@ -102,11 +96,8 @@ async def command(bot: BotClient, msg: GroupMessage, config_nm: ConfigNm, logger
                         args = parser.parse_args(shlex.split(get_msg_text(msg)))
                         if args.mode:
                             await change_mode_to(bot, msg, args.mode, config_nm, logger)
-                            await bot.api.post_group_msg(group_id=msg.group_id, text=f"已修改模式至{args.mode}")
                         else:
                             await change_mode(bot, msg, config_nm, logger)
-                            await bot.api.post_group_msg(group_id=msg.group_id, text=f"已修改模式至{args.mode}")
-                            logger.info(f"(bot:{config_nm.selfid}) 修改模式: {args.mode}")
                             return
                 elif args.command == "添加群":
                     if config_nm.function_open.promote == True:
@@ -114,8 +105,6 @@ async def command(bot: BotClient, msg: GroupMessage, config_nm: ConfigNm, logger
                         args = parser.parse_args(shlex.split(get_msg_text(msg)))
                         if args.group_id:
                             await add_group(bot, msg, args.group_id, config_nm, logger)
-                            await bot.api.post_group_msg(group_id=msg.group_id, text=f"已添加群: {' '.join(args.group_id)}")
-                            logger.info(f"(bot:{config_nm.selfid}) 添加群: {args.group_id}")
                             return
                 elif args.command == "删除群":
                     if config_nm.function_open.promote == True:
@@ -123,8 +112,6 @@ async def command(bot: BotClient, msg: GroupMessage, config_nm: ConfigNm, logger
                         args = parser.parse_args(shlex.split(get_msg_text(msg)))
                         if args.group_id:
                             await del_group(bot, msg, args.group_id, config_nm, logger)
-                            await bot.api.post_group_msg(group_id=msg.group_id, text=f"已删除群: {' '.join(args.group_id)}")
-                            logger.info(f"(bot:{config_nm.selfid}) 删除群: {args.group_id}")
                             return
             else:
                 pass

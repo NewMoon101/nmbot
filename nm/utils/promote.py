@@ -136,7 +136,7 @@ async def get_group_id_list(bot: BotClient) -> list[int]:
 async def show_promote_config(bot: BotClient, msg: GroupMessage, config_nm: ConfigNm, logger):
     promote_config: PromoteConfig = config_nm.promote_config  # type: ignore
     promote_time_min, promote_time_max, activetag_name, tag_list, activetag = promote_config.show_config()
-    info = f"最小宣发时间:{promote_time_min}\n最大宣发时间:{promote_time_max}\ntag列表:{' '.join(tag_list)}\n活跃tag:\nname:{activetag_name}\nmode:{activetag['mode']}\ngroup_list:{' '.join([str(i) for i in activetag['list']])}"
+    info = f"最小宣发时间: {promote_time_min}\n最大宣发时间: {promote_time_max}\ntag列表: {' '.join(tag_list)}\n活跃tag:\n  name: {activetag_name}\n  mode: {activetag['mode']}\n  group_list: {' '.join([str(i) for i in activetag['list']])}"
     await bot.api.post_group_msg(group_id=msg.group_id, text=info)
 
 async def add_tag(bot: BotClient, msg: GroupMessage, tag_name: str, config_nm: ConfigNm, logger):
@@ -144,44 +144,51 @@ async def add_tag(bot: BotClient, msg: GroupMessage, tag_name: str, config_nm: C
     promote_config: PromoteConfig = config_nm.promote_config  # type: ignore
     promote_config.add_tag(tag_name, config_nm, logger)
     await bot.api.post_group_msg(group_id=msg.group_id, text=f"已添加tag: {tag_name}")
+    logger.info(f"(bot:{config_nm.selfid}) 添加tag: {tag_name}")
 
 async def del_tag(bot: BotClient, msg: GroupMessage, tag_name: str, config_nm: ConfigNm, logger):
     """删除tag"""
     promote_config: PromoteConfig = config_nm.promote_config  # type: ignore
     promote_config.del_tag(tag_name, config_nm, logger)
     await bot.api.post_group_msg(group_id=msg.group_id, text=f"已删除tag: {tag_name}")
-    
+    logger.info(f"(bot:{config_nm.selfid}) 删除tag: {tag_name}")
+
 async def change_mode(bot: BotClient, msg: GroupMessage, config_nm: ConfigNm, logger):
     """切换tag模式"""
     promote_config: PromoteConfig = config_nm.promote_config  # type: ignore
     promote_config.change_activetag_mode(config_nm, logger)
     await bot.api.post_group_msg(group_id=msg.group_id, text=f"已切换tag模式为: {promote_config.get_activetag()['mode']}")
+    logger.info(f"(bot:{config_nm.selfid}) 切换tag模式: {promote_config.get_activetag()['mode']}")
 
 async def change_mode_to(bot: BotClient, msg: GroupMessage, mode: str, config_nm: ConfigNm, logger):
     """切换tag模式到指定模式"""
     promote_config: PromoteConfig = config_nm.promote_config  # type: ignore
     promote_config.change_activetag_mode_to(mode, config_nm, logger)
     await bot.api.post_group_msg(group_id=msg.group_id, text=f"已切换tag模式为: {promote_config.get_activetag()['mode']}")
-    
+    logger.info(f"(bot:{config_nm.selfid}) 切换tag模式: {promote_config.get_activetag()['mode']}")
+
 async def change_tag(bot: BotClient, msg: GroupMessage, tag_name: str, config_nm: ConfigNm, logger):
     """切换活跃tag"""
     promote_config: PromoteConfig = config_nm.promote_config  # type: ignore
     promote_config.change_activetag(tag_name, config_nm, logger)
     await bot.api.post_group_msg(group_id=msg.group_id, text=f"已切换活跃tag为: {tag_name}")
-    
+    logger.info(f"(bot:{config_nm.selfid}) 修改tag: {tag_name}")
+
 async def add_group(bot: BotClient, msg: GroupMessage, group_list: list[str], config_nm: ConfigNm, logger):
     """添加群组到活跃tag"""
     group_list_int = [int(i) for i in group_list]
     promote_config: PromoteConfig = config_nm.promote_config  # type: ignore
     promote_config.add_group_to_activetag(group_list_int, config_nm, logger)
     await bot.api.post_group_msg(group_id=msg.group_id, text=f"已添加群组到活跃tag: {' '.join([str(i) for i in group_list])}")
-    
+    logger.info(f"(bot:{config_nm.selfid}) 添加群组到活跃tag: {group_list}")
+
 async def del_group(bot: BotClient, msg: GroupMessage, group_list: list[str], config_nm: ConfigNm, logger):
     """从活跃tag中删除群组"""
     group_list_int = [int(i) for i in group_list]
     promote_config: PromoteConfig = config_nm.promote_config  # type: ignore
     promote_config.del_group_from_activetag(group_list_int, config_nm, logger)
     await bot.api.post_group_msg(group_id=msg.group_id, text=f"已从活跃tag中删除群组: {' '.join([str(i) for i in group_list])}")
+    logger.info(f"(bot:{config_nm.selfid}) 从活跃tag中删除群组: {group_list}")
 
 async def get_promote_group_list(bot: BotClient, config_nm: ConfigNm, logger):
     all_group_id_list = await get_group_id_list(bot)
