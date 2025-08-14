@@ -136,7 +136,7 @@ async def get_group_id_list(bot: BotClient) -> list[int]:
 async def show_promote_config(bot: BotClient, msg: GroupMessage, config_nm: ConfigNm, logger):
     promote_config: PromoteConfig = config_nm.promote_config  # type: ignore
     promote_time_min, promote_time_max, activetag_name, tag_list, activetag = promote_config.show_config()
-    info = f"最小宣发时间:{promote_time_min}\n最大宣发时间:{promote_time_max}\ntag列表:{' '.join(tag_list)}\n活跃tag:\nname:{activetag_name}\nmode:{activetag["mode"]}\ngroup_list:{''.join([str(i) for i in activetag["list"]])}"
+    info = f"最小宣发时间:{promote_time_min}\n最大宣发时间:{promote_time_max}\ntag列表:{' '.join(tag_list)}\n活跃tag:\nname:{activetag_name}\nmode:{activetag['mode']}\ngroup_list:{' '.join([str(i) for i in activetag['list']])}"
     await bot.api.post_group_msg(group_id=msg.group_id, text=info)
 
 async def add_tag(bot: BotClient, msg: GroupMessage, tag_name: str, config_nm: ConfigNm, logger):
