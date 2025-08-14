@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import shlex
+from argparse import ArgumentError
 
 from peewee import SqliteDatabase
 
@@ -93,7 +94,12 @@ async def command(bot: BotClient, msg: GroupMessage, config_nm: ConfigNm, logger
                 elif args.command == "切换模式":
                     if config_nm.function_open.promote == True:
                         parser.add_argument("-m", "--mode", type=str, help="要修改的模式", choices=["white", "black"])
-                        args = parser.parse_args(shlex.split(get_msg_text(msg)))
+                        try:
+                            args = parser.parse_args(shlex.split(get_msg_text(msg)))
+                        except ArgumentError:
+                            logger.warning(f"(bot:{config_nm.selfid}) 切换模式命令参数错误")
+                            await bot.api.post_group_msg(group_id=msg.group_id, text="参数错误，请检查命令格式")
+                            return
                         if args.mode:
                             await change_mode_to(bot, msg, args.mode, config_nm, logger)
                         else:
