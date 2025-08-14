@@ -42,7 +42,7 @@ async def command(bot: BotClient, msg: GroupMessage, config_nm: ConfigNm, logger
                 if args.command == "sysinfo":
                     sysinfo = get_sysinfo()
                     logger.info(f"(bot:{config_nm.selfid}) 系統信息: {sysinfo}")
-                    await bot.api.post_group_msg(group_id=msg.group_id, text=f"系統信息: {sysinfo}")
+                    await bot.api.post_group_msg(group_id=msg.group_id, text=f"cpu: {sysinfo['cpu_usage']}\nmemory: {sysinfo['memory_usage']}")
                     return
                 elif args.command == "help":
                     await bot.api.post_group_msg(group_id=msg.group_id, text=help_text)
