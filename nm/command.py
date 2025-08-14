@@ -114,7 +114,7 @@ async def command(bot: BotClient, msg: GroupMessage, config_nm: ConfigNm, logger
                         args = parser.parse_args(shlex.split(get_msg_text(msg)))
                         if args.group_id:
                             await add_group(bot, msg, args.group_id, config_nm, logger)
-                            await bot.api.post_group_msg(group_id=msg.group_id, text=f"已添加群: {" ".join(args.group_id)}")
+                            await bot.api.post_group_msg(group_id=msg.group_id, text=f"已添加群: {' '.join(args.group_id)}")
                             logger.info(f"(bot:{config_nm.selfid}) 添加群: {args.group_id}")
                             return
                 elif args.command == "删除群":
@@ -123,7 +123,7 @@ async def command(bot: BotClient, msg: GroupMessage, config_nm: ConfigNm, logger
                         args = parser.parse_args(shlex.split(get_msg_text(msg)))
                         if args.group_id:
                             await del_group(bot, msg, args.group_id, config_nm, logger)
-                            await bot.api.post_group_msg(group_id=msg.group_id, text=f"已删除群: {" ".join(args.group_id)}")
+                            await bot.api.post_group_msg(group_id=msg.group_id, text=f"已删除群: {' '.join(args.group_id)}")
                             logger.info(f"(bot:{config_nm.selfid}) 删除群: {args.group_id}")
                             return
             else:
