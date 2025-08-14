@@ -42,10 +42,10 @@ global_init = 0
 async def init_during_group_event(msg: GroupMessage):
     global global_init
     if global_init == 0:
+        global config_nm
         logger.info(f"(bot:{config_nm.selfid}) 進行定時任務和宣發初始化")
         global_init += 1
         asyncio.create_task(schedule_main(bot, group_info_db, logger))
-        global config_nm
         if config_nm.function_open.promote:
             global promote_config
             promote_config = PromoteConfig(config_nm, logger)
