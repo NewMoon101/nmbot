@@ -10,7 +10,7 @@ from nm.core.msg import create_msg_db # 导入创建消息数据库的函数
 from nm.core.info import create_group_info_db # 导入创建群组信息数据库的函数
 from nm.command import command  # 导入命令处理函数
 from nm.utils.schedule import schedule_main  # 导入调度函数
-from nm.utils.promote import init_promote_config, PromoteConfig
+from nm.utils.promote import PromoteConfig
 from nm.utils.master import report_ated, report_msg_private, report_poke, report_red_pocket, report_replied  # 导入报告函数
 
 from ncatbot.utils.config import config
@@ -47,9 +47,8 @@ async def init_during_group_event(msg: GroupMessage):
         asyncio.create_task(schedule_main(bot, group_info_db, logger))
         global config_nm
         if config_nm.function_open.promote:
-            init_promote_config(config_nm, logger)
             global promote_config
-            promote_config = PromoteConfig(config_nm)
+            promote_config = PromoteConfig(config_nm, logger)
             config_nm.promote_config = promote_config # type: ignore
 
 # 以下 group event
