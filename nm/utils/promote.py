@@ -211,12 +211,12 @@ async def promote_t(bot: BotClient, msg: GroupMessage, config_nm: ConfigNm, logg
     """
     promote_post_group_id: int = msg.group_id
     await bot.api.post_group_msg(group_id=promote_post_group_id, text="将宣发一条消息")
-    logger.info(f"(bot:{config_nm.selfid}) 将宣发消息, msg_id:{msg.message[0]['data']['id']}")
     promote_msg_id = get_msg_reply(msg)
+    logger.info(f"(bot:{config_nm.selfid}) 将宣发消息, msg_id:{promote_msg_id}")
     group_list = await get_promote_group_list(bot, config_nm, logger)
     promote_config: PromoteConfig = config_nm.promote_config # type: ignore
     for group_id in group_list:
         await sleep_random_async(promote_config.promote_time_min, promote_config.promote_time_max)
         await bot.api.forward_group_single_msg(message_id=promote_msg_id, group_id=group_id)
-        logger.info(f"(bot:{config_nm.selfid}) 已宣發至群{group_id}")
+        logger.info(f"(bot:{config_nm.selfid}) 消息{promote_msg_id} 已宣發至群{group_id}")
     await bot.api.post_group_msg(group_id=promote_post_group_id, text="宣发成功", reply=promote_msg_id)
