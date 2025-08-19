@@ -118,3 +118,12 @@ async def report_replied(msg: GroupMessage, bot: BotClient, config_nm: ConfigNm,
                     info_reply += f"来自群>{group_info.group_name}({msg.group_id})<\n用户>{msg.sender.nickname}({msg.user_id})<"
                 await bot.api.post_group_msg(group_id=report_group_id, text=info_reply)
                 await bot.api.forward_group_single_msg(group_id=report_group_id, message_id=str(msg.message_id))
+
+async def reply_friend_and_group_num(msg: GroupMessage, bot: BotClient, config_nm: ConfigNm, logger):
+    friend_data = await bot.api.get_friend_list(cache=False)
+    friend_num = len(friend_data["data"])
+    group_data = await bot.api.get_group_list(no_cache=True)
+    group_num = len(group_data["data"])
+    logger.info(msg)
+    reply_text = f"群数: {group_num}\n友数: {friend_num}"
+    await bot.api.post_group_msg(group_id=msg.group_id, text=reply_text)

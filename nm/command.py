@@ -10,6 +10,7 @@ from nm.core.info import update_group_info
 from nm.funclib.funclib import get_sysinfo, NoExitArgumentParser
 from nm.funclib.ncfunclib import get_msg_text, get_msg_at, get_msg_type
 from nm.utils.promote import promote_t, show_promote_config, add_tag, del_tag, change_mode, change_mode_to, change_tag, add_group, del_group
+from nm.utils.master import reply_friend_and_group_num
 
 from ncatbot.core import BotClient
 from ncatbot.core.message import GroupMessage
@@ -58,6 +59,13 @@ async def command(bot: BotClient, msg: GroupMessage, config_nm: ConfigNm, logger
                             return
                         return
                     return
+                elif args.command == "显示":
+                    parser.add_argument("thing", type=str, help="要显示的东西")
+                    args = parser.parse_args(shlex.split(get_msg_text(msg)))
+                    if args.thing:
+                        if args.thing == "群友数":
+                            await reply_friend_and_group_num(msg, bot, config_nm, logger)
+                            return
                 elif args.command == "宣发":
                     if config_nm.function_open.promote == True:
                         if not "reply" in get_msg_type(msg):
