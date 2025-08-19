@@ -8,6 +8,13 @@ from ncatbot.core.client import BotClient
 from ncatbot.core.message import GroupMessage, PrivateMessage
 from ncatbot.core.notice import NoticeMessage
 
+def total_ated(msg: GroupMessage, config_nm: ConfigNm, is_report_at_all):
+    flag_at_all = False
+    if is_report_at_all:
+        if "all" in get_msg_at(msg):
+            flag_at_all = True
+    return config_nm.selfid in get_msg_at(msg) or flag_at_all
+
 async def report_ated(msg: GroupMessage, bot:BotClient, config_nm: ConfigNm, report_group_id: int, logger, is_report_at_all=False):
     """
     上报被@的群消息
@@ -19,11 +26,8 @@ async def report_ated(msg: GroupMessage, bot:BotClient, config_nm: ConfigNm, rep
         logger: 日志记录器
         is_report_at_all: 是否上报@全体成员的消息
     """
-    flag_at_all = False
-    if is_report_at_all:
-        if "all" in get_msg_at(msg):
-            flag_at_all = True
-    if config_nm.selfid in get_msg_at(msg) or flag_at_all:
+    ated = total_ated(msg, config_nm, is_report_at_all)
+    if ated:
         logger.info(msg)
         group_info = get_group_info(msg.group_id)
         if group_info is None:
@@ -99,6 +103,10 @@ async def report_replied(msg: GroupMessage, bot: BotClient, config_nm: ConfigNm,
         except Exception as e:
             logger.info(e)
         else:
+            ated = total_ated(msg, config_nm, config_nm.function_open.report.at_all)
+            if config_nm.function_open.report.ated and ated:
+                logger.debug(f"(bot:{config_nm.selfid}) 消息:{msg.message_id}同時包含@和回覆, 只上報一次")
+                return
             if config_nm.selfid == str(replied_user_id):
                 info_reply = f"回复:\n"
                 logger.info(msg)
