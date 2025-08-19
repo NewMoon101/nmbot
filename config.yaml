@@ -37,22 +37,21 @@ report_self_message: false  # 是否报告 Bot 自己的消息
 #################
 
 # nmbot自定義配置
-# 主人, 同上面的root, 這裏只在nmbot中使用
 master:
-  - 123456
+  - 123456 # 主人, 同上面的root, 這裏只在nmbot中使用
 
 devgroup: 123456 # 開發羣組
 
-function_open:
-  command: False
-  report:
-    ated: False
-    at_all: False
-    private_msg: False
-    poke: False
-    red_pocket: False
-    replied: False
-  promote: False
+function_open: # 功能开关
+  command: False # 是否允许qq中的命令
+  report: # 向指定的群中上报某些消息
+    ated: False # bot被@
+    at_all: False # bot所在群有@全体
+    private_msg: False # 私聊消息
+    poke: False # 戳一戳
+    red_pocket: False # 红包
+    replied: False # bot的消息被回复
+  promote: False # 宣发功能
 
 db:
   type: "postgres"  # 数据库类型
