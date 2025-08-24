@@ -9,7 +9,7 @@ from nm.core.config import ConfigNm
 from nm.core.info import update_group_info
 from nm.funclib.funclib import get_sysinfo, NoExitArgumentParser
 from nm.funclib.ncfunclib import get_msg_text, get_msg_at, get_msg_type
-from nm.utils.promote import promote_t, show_promote_config, add_tag, del_tag, change_mode, change_mode_to, change_tag, add_group, del_group
+from nm.utils.promote import promote_t, show_promote_config, add_tag, del_tag, change_mode, change_mode_to, change_tag, add_group, del_group, change_promote_wait_time
 from nm.utils.master import reply_friend_and_group_num
 
 from ncatbot.core import BotClient
@@ -78,6 +78,16 @@ async def command(bot: BotClient, msg: GroupMessage, config_nm: ConfigNm, logger
                     if config_nm.function_open.promote == True:
                         await show_promote_config(bot, msg, config_nm, logger)
                         logger.info(f"(bot:{config_nm.selfid}) 显示宣发配置")
+                        return
+                elif args.command == "宣发时间":
+                    if config_nm.function_open.promote == True:
+                        parser.add_argument("time", type=int, nargs="+", help="宣发等待时间")
+                        args = parser.parse_args(shlex.split(get_msg_text(msg)))
+                        if args.time:
+                            if len(args.time) == 1:
+                                await change_promote_wait_time(bot, msg, args.time[0], args.time[0], config_nm, logger)
+                            elif len(args.time) >= 2 :
+                                await change_promote_wait_time(bot, msg, args.time[0], args.time[1], config_nm, logger)
                         return
                 elif args.command == "添加标签":
                     if config_nm.function_open.promote == True:

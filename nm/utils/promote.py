@@ -59,6 +59,11 @@ class PromoteConfig:
     def show_config(self):
         return (self.promote_time_min, self.promote_time_max, self.activetag, self.get_tag_list(), self.get_activetag())
 
+    def change_time(self, min_time: int, max_time: int, config_nm: ConfigNm, logger):
+        self.promote_time_min = min_time
+        self.promote_time_max = max_time
+        self.update_config_file(config_nm, logger)
+
     def get_tag_list(self):
         return list(self.tag.keys())
 
@@ -139,6 +144,12 @@ async def show_promote_config(bot: BotClient, msg: GroupMessage, config_nm: Conf
     promote_time_min, promote_time_max, activetag_name, tag_list, activetag = promote_config.show_config()
     info = f"最小宣发时间: {promote_time_min}\n最大宣发时间: {promote_time_max}\ntag列表: {' '.join(tag_list)}\n活跃tag:\n  name: {activetag_name}\n  mode: {activetag['mode']}\n  group_list: {' '.join([str(i) for i in activetag['list']])}"
     await bot.api.post_group_msg(group_id=msg.group_id, text=info)
+
+async def change_promote_wait_time(bot: BotClient, msg: GroupMessage, min_time: int, max_time: int, config_nm: ConfigNm, logger):
+    promote_config: PromoteConfig = config_nm.promote_config  # type: ignore
+    promote_config.change_time(min_time, max_time, config_nm, logger)
+    await bot.api.post_group_msg(group_id=msg.group_id, text=f"时间: {min_time} - {max_time}")
+    logger.info(f"(bot:{config_nm.selfid}) 修改宣发等待时间 {min_time} - {max_time}")
 
 async def add_tag(bot: BotClient, msg: GroupMessage, tag_name: str, config_nm: ConfigNm, logger):
     """添加tag"""
