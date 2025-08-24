@@ -26,6 +26,8 @@ async def report_ated(msg: GroupMessage, bot:BotClient, config_nm: ConfigNm, rep
         logger: 日志记录器
         is_report_at_all: 是否上报@全体成员的消息
     """
+    if int(msg.user_id) in config_nm.master:
+        return
     ated = total_ated(msg, config_nm, is_report_at_all)
     if ated:
         logger.info(msg)
@@ -47,6 +49,8 @@ async def report_msg_private(msg: PrivateMessage, bot: BotClient, config_nm: Con
         report_group_id: 上报的群ID
         logger: 日志记录器
     """
+    if int(msg.user_id) in config_nm.master:
+        return
     info_reply = f"私聊消息:\n来自>{msg.sender.nickname}({msg.user_id})<"
     await bot.api.post_group_msg(group_id=report_group_id, text=info_reply)
     await bot.api.forward_group_single_msg(group_id=report_group_id, message_id=str(msg.message_id))
@@ -95,6 +99,8 @@ async def report_red_pocket(msg: GroupMessage, bot: BotClient, config_nm: Config
         await bot.api.post_group_msg(group_id=report_group_id, text=info_reply)
 
 async def report_replied(msg: GroupMessage, bot: BotClient, config_nm: ConfigNm, report_group_id: int, logger):
+    if int(msg.user_id) in config_nm.master:
+        return
     if "reply" in get_msg_type(msg):
         msg_id = get_msg_reply(msg)
         try:
