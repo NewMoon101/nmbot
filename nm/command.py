@@ -15,9 +15,29 @@ from nm.utils.master import reply_friend_and_group_num
 from ncatbot.core import BotClient
 from ncatbot.core.message import GroupMessage
 
-help_text = """
-使用 help 唤出此列表
+help_text = """nmbot 帮助
+help 唤出此列表
+sysinfo 查看cpu和内存使用情况
+update 更新数据库
+    -m 指定模块
+        group_info qq群数据
+显示 显示某些数据
+    群友数 群数和好友数
+宣发 宣发一条消息
+    [reply] 需要在回复一条消息的情况下
+显示宣发 显示宣发配置
+宣发时间 修改宣发等待时间
+    [time1] [time2] 接收两个正整数, 前者为最小值, 后者为最大值
+添加标签 添加群标签
+    [tag_name]
+删除标签 使用方法同上
+切换模式 切换当前正在使用的标签的黑白模式
+添加群 在当前正在使用的标签中添加群
+    [group_id] 接收大于1个qq群id, 以空格( )分割
+删除群 使用方法同上
 
+以上命令只有机主可以使用
+如果消息中含有@, 只有只@了一个bot的会被该bot执行
 """ # TODO: 编写帮助列表
 
 async def command(bot: BotClient, msg: GroupMessage, config_nm: ConfigNm, logger, group_info_db: SqliteDatabase) -> None:
