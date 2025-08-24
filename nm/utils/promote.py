@@ -225,3 +225,4 @@ async def promote_t(bot: BotClient, msg: GroupMessage, config_nm: ConfigNm, logg
         else:
             logger.info(f"(bot:{config_nm.selfid}) 消息{promote_msg_id} 已宣發至群{group_id}")
     await bot.api.post_group_msg(group_id=promote_post_group_id, text="宣发成功", reply=promote_msg_id)
+    logger.info(f"(bot:{config_nm.selfid}) 消息{promote_msg_id} 宣发完成")
