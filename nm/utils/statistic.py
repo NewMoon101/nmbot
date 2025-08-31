@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from pathlib import Path
-from peewee import SqliteDatabase, Model, IntegerField, TextField, BlobField, AutoField, ForeignKeyField, Proxy
+from peewee import SqliteDatabase, Model, IntegerField, AutoField, Proxy
 
 from nm.core.config import ConfigNm
 
