@@ -36,6 +36,7 @@ class ConfigNm:
             self.report = self.ReportConfig(function_open_config.get("report", {}))
             self.command = function_open_config.get("command", False)
             self.promote = function_open_config.get("promote", False)
+            self.statistic = function_open_config.get("statistic", False)
 
     def __init__(self, path: str):
         with open(path, mode="r", encoding="utf-8") as config_file:
