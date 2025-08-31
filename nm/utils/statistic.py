@@ -10,14 +10,14 @@ from ncatbot.core.message import GroupMessage
 msg_statistic_db_proxy = Proxy()
 
 def create_msg_record_db(config_nm: ConfigNm) -> SqliteDatabase:
-    db_path = Path(config_nm.db_local.path + "/msg.db")
+    db_path = Path(config_nm.db_local.path + "/msg_record.db")
     if not db_path.parent.exists():
         db_path.parent.mkdir(parents=True, exist_ok=True)
-    msg_db = SqliteDatabase(db_path)
-    msg_db.connect()
-    msg_statistic_db_proxy.initialize(msg_db)
-    msg_db.create_tables([MsgRecord])
-    return msg_db
+    msg_record_db = SqliteDatabase(db_path)
+    msg_record_db.connect()
+    msg_statistic_db_proxy.initialize(msg_record_db)
+    msg_record_db.create_tables([MsgRecord])
+    return msg_record_db
 
 class Record(Model):
 
