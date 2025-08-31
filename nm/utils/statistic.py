@@ -44,3 +44,7 @@ def insert_msg_record(msg: GroupMessage):
 
 def statistic(msg: GroupMessage):
     insert_msg_record(msg)
+
+def analysis_total_msg_frequence():
+    data = list(Record.select())
+    pass
