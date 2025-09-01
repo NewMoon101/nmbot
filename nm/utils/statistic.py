@@ -7,6 +7,7 @@ from nm.core.config import ConfigNm
 
 from ncatbot.core.message import GroupMessage
 
+# 以下 用于统计消息数据
 msg_statistic_db_proxy = Proxy()
 
 def create_msg_record_db(config_nm: ConfigNm) -> SqliteDatabase:
@@ -48,3 +49,36 @@ def statistic(msg: GroupMessage):
 def analysis_total_msg_frequence():
     data = list(Record.select())
     pass
+
+# 以下, 用于实现"bot多久没在某群发言了"功能
+self_msg_record_db_proxy = Proxy()
+
+def create_self_msg_record_db(config_nm: ConfigNm) -> SqliteDatabase:
+    db_path = Path(config_nm.db_local.path + "/self_msg_record.db")
+    if not db_path.parent.exists():
+        db_path.parent.mkdir(parents=True, exist_ok=True)
+    self_msg_record_db = SqliteDatabase(db_path)
+    self_msg_record_db.connect()
+    self_msg_record_db_proxy.initialize(self_msg_record_db)
+    self_msg_record_db.create_tables([MsgRecord])
+    return self_msg_record_db
+
+class SelfRecord(Model):
+
+    class Meta:
+        database = self_msg_record_db_proxy
+
+class SelfMsgRecord(SelfRecord):
+
+    class Meta: # type: ignore
+        table_name = "record"
+
+    group_id = IntegerField(primary_key=True)
+    time = IntegerField()
+
+def insert_self_msg_record(msg: GroupMessage):
+    msg_record_data = {
+        "group_id": msg.group_id,
+        "time": msg.time
+    }
+    SelfMsgRecord.create(**msg_record_data)
