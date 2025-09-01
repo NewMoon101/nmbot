@@ -20,3 +20,6 @@ venv/
 
 # python运行文件
 *.pyc
+
+# 配置文件
+*.yaml
