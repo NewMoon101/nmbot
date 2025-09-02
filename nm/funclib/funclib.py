@@ -10,8 +10,10 @@ import aiohttp
 import hashlib
 import asyncio
 import argparse
+import textwrap
 
 import psutil
+from PIL import Image, ImageDraw, ImageFont
 
 def sleep_random(min: int, max: int) -> None:
     time.sleep(random.randrange(min, max))
@@ -129,3 +131,96 @@ class NoExitArgumentParser(argparse.ArgumentParser):
 
     def error(self, message): # type: ignore
         pass
+
+def text_to_png(text: str,
+                out_path: str,
+                font_path: str | None = None,
+                font_size: int = 40,
+                max_width_px: int | None = None,      # 画布最大宽度，None=不限
+                char_soft_wrap: int = 128,            # 字符数软阈值，仅当 max_width_px=None 时生效
+                padding: int = 10,
+                line_spacing: int = 10,
+                bg='white',
+                fg='black') -> None:
+    """
+    将多行文本渲染为 PNG，支持长行自动分行。
+    text        : 原始字符串，可含 \n
+    out_path    : 输出 PNG 文件
+    font_path   : 支持中文的 TTF 路径，如 'msyh.ttc'
+    max_width_px: 画布最大像素宽度；若给定，则按像素精确断行。
+                  若 None，则按 char_soft_wrap 字符数粗略断行。
+    char_soft_wrap: 当 max_width_px=None 时，每行最大字符数
+    padding     : 四周留白
+    line_spacing: 行间距（像素）
+    """
+    # 1) 字体
+    font = ImageFont.truetype(font_path, font_size) if font_path \
+           else ImageFont.load_default()
+
+    # 2) 按行拆分
+    raw_lines = text.splitlines()
+    wrapped_lines = []
+    dummy = Image.new('RGB', (1, 1))
+    draw = ImageDraw.Draw(dummy)
+
+    for line in raw_lines:
+        if line.strip() == '':
+            wrapped_lines.append('')
+            continue
+
+        # 如果给了像素宽度，用像素断行；否则按字符数软断行
+        if max_width_px is not None:
+            # 逐字符累加直到超宽
+            words = list(line)
+            current = ''
+            for ch in words:
+                test = current + ch
+                l, t, r, b = draw.textbbox((0, 0), test, font=font)
+                w, h = r - l, b - t
+                if w <= max_width_px - 2*padding:
+                    current = test
+                else:
+                    if current:
+                        wrapped_lines.append(current)
+                    current = ch
+            if current:
+                wrapped_lines.append(current)
+        else:
+            # 字符数软断行
+            wrapped_lines.extend(textwrap.wrap(line, width=char_soft_wrap))
+
+    # 3) 计算画布尺寸
+    line_sizes = []
+    for ln in wrapped_lines:
+        l, t, r, b = draw.textbbox((0, 0), ln, font=font)
+        line_sizes.append((r - l, b - t))
+    max_w = max(w for w, _ in line_sizes) if line_sizes else 0
+    total_h = sum(h for _, h in line_sizes) + line_spacing * max(0, len(line_sizes) - 1)
+
+    img_w = max_w + 2 * padding
+    img_h = total_h + 2 * padding
+
+    # 4) 绘图
+    img = Image.new('RGB', (img_w, img_h), color=bg)
+    draw = ImageDraw.Draw(img)
+    y = padding
+    for ln, (w, h) in zip(wrapped_lines, line_sizes):
+        draw.text((padding, y), ln, font=font, fill=fg)
+        y += h + line_spacing
+
+    # 5) 保存
+    img.save(out_path)
+
+# -------------------- 示例 --------------------
+if __name__ == "__main__":
+    long_line = "a" * 200  # 200 个 a
+    chinese_long = "这" * 150
+    multiline = f"第一行\n{long_line}\n{chinese_long}\n最后一行"
+
+    text_to_png(multiline,
+                out_path="multi.png",
+                font_path="msyh.ttc",   # 替换为本地中文字体
+                font_size=36,
+                max_width_px=600,       # 画布最大 600 px，超长按像素断行
+                padding=15,
+                line_spacing=8)
