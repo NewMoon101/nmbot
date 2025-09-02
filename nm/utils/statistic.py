@@ -59,7 +59,7 @@ def create_self_msg_record_db(config_nm: ConfigNm) -> SqliteDatabase:
     self_msg_record_db = SqliteDatabase(db_path)
     self_msg_record_db.connect()
     self_msg_record_db_proxy.initialize(self_msg_record_db)
-    self_msg_record_db.create_tables([MsgRecord])
+    self_msg_record_db.create_tables([SelfMsgRecord])
     return self_msg_record_db
 
 class SelfRecord(Model):
