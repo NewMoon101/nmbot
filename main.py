@@ -34,7 +34,7 @@ msg_db = create_msg_db(config_nm) # TODO:對於這個庫, 期望之後加入檢�
 #TODO: 在此处进行了data/qq{selfid}这个目录是否存在的判定及处理, 然而之后的功能多有使用这个路径, 或许应该把这个判定单独拿出来
 group_info_db = create_group_info_db(config_nm)  # 创建群组信息数据库
 if config_nm.function_open.statistic:
-    msg_record_db = create_msg_record_db(config_nm) # 创建消息信息数据库
+    msg_record_db = create_msg_record_db(config_nm) # 创建消息信息数据库 TODO: 這裏也需要控制大小
     self_msg_record_db = create_self_msg_record_db(config_nm)
 
 bot = BotClient() # 创建BotClient
