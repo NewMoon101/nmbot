@@ -12,7 +12,7 @@ from nm.command import command  # 导入命令处理函数
 from nm.utils.schedule import schedule_main  # 导入调度函数
 from nm.utils.promote import PromoteConfig
 from nm.utils.master import report_ated, report_msg_private, report_poke, report_red_pocket, report_replied  # 导入报告函数
-from nm.utils.statistic import create_msg_record_db, statistic
+from nm.utils.statistic import create_msg_record_db, statistic, create_self_msg_record_db
 
 from ncatbot.utils.config import config
 from ncatbot.core.client import BotClient
@@ -35,6 +35,7 @@ msg_db = create_msg_db(config_nm) # TODO:對於這個庫, 期望之後加入檢�
 group_info_db = create_group_info_db(config_nm)  # 创建群组信息数据库
 if config_nm.function_open.statistic:
     msg_record_db = create_msg_record_db(config_nm) # 创建消息信息数据库
+    self_msg_record_db = create_self_msg_record_db(config_nm)
 
 bot = BotClient() # 创建BotClient
 logger = get_log() # 创建logger

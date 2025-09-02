@@ -4,6 +4,7 @@ from pathlib import Path
 from peewee import SqliteDatabase, Model, IntegerField, AutoField, Proxy
 
 from nm.core.config import ConfigNm
+from nm.core.info import get_group_list
 
 from ncatbot.core.message import GroupMessage
 from ncatbot.core.client import BotClient
@@ -73,6 +74,24 @@ class SelfMsgRecord(SelfRecord):
 
     group_id = IntegerField(primary_key=True)
     time = IntegerField()
+
+async def init_self_msg_record_db(bot: BotClient, self_msg_record_db: SqliteDatabase):
+    # 首次創建, 以及添加新群時可使用
+    group_list = await get_group_list(bot)
+    group_list = [x["group_id"] for x in group_list]
+    group_data = [{"group_id": int(i), "time": 0} for i in group_list]
+    with self_msg_record_db.atomic():
+        SelfMsgRecord.insert_many(group_data).on_conflict("ignore").execute()
+
+async def delete_inexistent_group_self_db(bot: BotClient):
+    group_list = await get_group_list(bot)
+    group_list = [x["group_id"] for x in group_list]
+    ids = [row.group_id for row in SelfMsgRecord.select(SelfMsgRecord.group_id)]
+    diff = list(set(ids) - set(group_list))
+    SelfMsgRecord.delete().where(SelfMsgRecord.group_id.in_(diff)).execute()
+
+async def update_self_msg_record_db_cron():
+    pass # TODO:
 
 def insert_self_msg_record(msg: GroupMessage):
     msg_record_data = {
