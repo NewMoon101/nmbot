@@ -142,14 +142,14 @@ async def report_self_msg_record(bot: BotClient, msg: GroupMessage, config_nm:Co
         if group_time.time == 0:
             time_text = "从未\n"
         else:
-            time_delta = datetime.timedelta(group_time.time - time_now) # 未校验
+            time_delta = datetime.timedelta(time_now - group_time.time) # type: ignore # 未校验 
             hms = str(time_delta)
             time_text = hms + "\n"
         group_text = f"{group_name}({group_time.group_id}): {time_text}"
         text += group_text
     img_path = Path(config_nm.cache_path) / "self_msg_record.png"
     font_path = Path("src", "font", "SourceHanSansCN-Bold.otf")
-    text_to_png(text=text, out_path=str(img_path), font_path=str(font_path))
+    text_to_png(text=text, out_path=str(img_path), font_path=str(font_path), font_size=20)
     await bot.api.post_group_msg(group_id=msg.group_id, image=str(img_path))
     logger.info(f"(bot:{config_nm.selfid}) 上报了多久未发言")
 
