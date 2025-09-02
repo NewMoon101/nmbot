@@ -22,4 +22,4 @@ venv/
 *.pyc
 
 # 配置文件
-*.yaml
+/*.yaml
