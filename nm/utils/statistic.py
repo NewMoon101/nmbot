@@ -6,6 +6,7 @@ from peewee import SqliteDatabase, Model, IntegerField, AutoField, Proxy
 from nm.core.config import ConfigNm
 
 from ncatbot.core.message import GroupMessage
+from ncatbot.core.client import BotClient
 
 # 以下 用于统计消息数据
 msg_statistic_db_proxy = Proxy()
@@ -43,9 +44,6 @@ def insert_msg_record(msg: GroupMessage):
     }
     MsgRecord.create(**msg_record_data)
 
-def statistic(msg: GroupMessage):
-    insert_msg_record(msg)
-
 def analysis_total_msg_frequence():
     data = list(Record.select())
     pass
@@ -82,3 +80,12 @@ def insert_self_msg_record(msg: GroupMessage):
         "time": msg.time
     }
     SelfMsgRecord.create(**msg_record_data)
+
+def update_self_msg_record(bot: BotClient, msg: GroupMessage, config_nm: ConfigNm, logger):
+    if str(msg.user_id) == config_nm.selfid:
+        insert_self_msg_record(msg)
+        logger.debug(f"(bot:{config_nm.selfid}) 更新了bot消息記錄數據庫")
+
+def statistic(bot: BotClient, msg: GroupMessage, config_nm: ConfigNm, logger):
+    insert_msg_record(msg)
+    update_self_msg_record(bot, msg, config_nm, logger)

@@ -76,7 +76,7 @@ if config_nm.function_open.command:
 if config_nm.function_open.statistic:
     @bot.group_event()
     async def on_statistic(msg: GroupMessage):
-        statistic(msg)
+        statistic(bot, msg, config_nm, logger)
 
 # 以下 private event
 if config_nm.function_open.report.private_msg:
