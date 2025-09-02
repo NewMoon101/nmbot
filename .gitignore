@@ -4,6 +4,9 @@ data/*_access.json
 # 日志文件
 logs/*
 
+# 缓存文件
+cache/*
+
 # 敏感数据文件
 data/*.db
 data/qq*/*
