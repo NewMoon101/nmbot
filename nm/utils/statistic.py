@@ -142,7 +142,7 @@ async def report_self_msg_record(bot: BotClient, msg: GroupMessage, config_nm:Co
         if group_time.time == 0:
             time_text = "从未\n"
         else:
-            time_delta = datetime.timedelta(time_now - group_time.time) # type: ignore # 未校验 
+            time_delta = datetime.timedelta(seconds = time_now - group_time.time) # type: ignore # 未校验 
             hms = str(time_delta)
             time_text = hms + "\n"
         group_text = f"{group_name}({group_time.group_id}): {time_text}"
