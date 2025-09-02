@@ -123,7 +123,7 @@ def insert_self_msg_record(msg: GroupMessage):
         "group_id": msg.group_id,
         "time": msg.time
     }
-    SelfMsgRecord.create(**msg_record_data)
+    SelfMsgRecord.insert(msg_record_data).on_conflict_replace().execute()
 
 def update_self_msg_record(bot: BotClient, msg: GroupMessage, config_nm: ConfigNm, logger):
     if str(msg.user_id) == config_nm.selfid:
