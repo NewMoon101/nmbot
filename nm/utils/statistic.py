@@ -132,6 +132,7 @@ def update_self_msg_record(bot: BotClient, msg: GroupMessage, config_nm: ConfigN
 
 async def report_self_msg_record(bot: BotClient, msg: GroupMessage, config_nm:ConfigNm, logger):
     data:list[SelfMsgRecord] = list(SelfMsgRecord.select())
+    data.sort(key= lambda group_time: group_time.time) # type: ignore
     time_now = int(time.time())
     text = ""
     for group_time in data:
@@ -139,12 +140,12 @@ async def report_self_msg_record(bot: BotClient, msg: GroupMessage, config_nm:Co
         gorup_info = get_group_info(group_time.group_id) # type: ignore
         group_name = gorup_info.group_name # type: ignore
         if group_time.time == 0:
-            time_text = "从未"
+            time_text = "从未\n"
         else:
             time_delta = datetime.timedelta(group_time.time - time_now) # 未校验
             hms = str(time_delta)
-            time_text = hms
-        group_text = f"{group_name}({group_time.group_id}):"
+            time_text = hms + "\n"
+        group_text = f"{group_name}({group_time.group_id}): {time_text}"
         text += group_text
     img_path = Path(config_nm.cache_path) / "self_msg_record.png"
     font_path = Path("src", "font", "SourceHanSansCN-Bold.otf")
