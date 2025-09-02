@@ -30,6 +30,14 @@ else:
 config.load_config(config_yaml_path) # 从文件加载配置, 一定版本后的ncatbot会自动完成这一步
 config_nm = ConfigNm(config_yaml_path)  # 创建ConfigNm实例
 
+# 創建必要的路徑文件夾
+data_path = Path(config_nm.db_local.path)
+if not data_path.exists():
+    data_path.mkdir(parents=True, exist_ok=True)
+cache_path = Path(config_nm.cache_path)
+if not cache_path.exists():
+    cache_path.mkdir(parents=True, exist_ok=True)
+
 msg_db = create_msg_db(config_nm) # TODO:對於這個庫, 期望之後加入檢測大小自動存檔之前消息的功能
 #TODO: 在此处进行了data/qq{selfid}这个目录是否存在的判定及处理, 然而之后的功能多有使用这个路径, 或许应该把这个判定单独拿出来
 group_info_db = create_group_info_db(config_nm)  # 创建群组信息数据库

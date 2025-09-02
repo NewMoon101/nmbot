@@ -48,3 +48,4 @@ class ConfigNm:
             self.function_open = self.FunctionOpenConfig(config.get("function_open", {}))
             self.db = self.DatabaseConfig(config.get("db", {}))
             self.db_local = self.LocalDatabaseConfig(config.get("db-local", {}), selfid=self.selfid)
+            self.cache_path = str(Path("cache/qq" + str(self.selfid)))
