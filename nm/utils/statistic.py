@@ -94,9 +94,10 @@ async def delete_inexistent_group_self_db(bot: BotClient):
     diff = list(set(ids) - set(group_list))
     SelfMsgRecord.delete().where(SelfMsgRecord.group_id.in_(diff)).execute()
 
-async def update_self_msg_record_db_cron(bot: BotClient, self_msg_record_db: SqliteDatabase, logger):
+async def update_self_msg_record_db_cron(bot: BotClient, config_nm: ConfigNm, self_msg_record_db: SqliteDatabase, logger):
     await init_self_msg_record_db(bot, self_msg_record_db)
     await delete_inexistent_group_self_db(bot)
+    logger.info(f"(bot:{config_nm.selfid}) 已更新bot發言記錄數據庫")
 
 async def schedule_statistic_self(bot: BotClient, config_nm: ConfigNm, self_msg_record_db: SqliteDatabase, logger):
     scheduler = AsyncIOScheduler()
@@ -104,7 +105,7 @@ async def schedule_statistic_self(bot: BotClient, config_nm: ConfigNm, self_msg_
         update_self_msg_record_db_cron,
         "interval",
         hours=12,
-        args=[bot, self_msg_record_db, logger],
+        args=[bot, config_nm, self_msg_record_db, logger],
         id="update_self_msg_record_db",
         next_run_time=datetime.datetime.now() + datetime.timedelta(seconds=10)
     )
