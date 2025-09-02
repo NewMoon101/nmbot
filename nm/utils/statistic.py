@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
 
+import asyncio
+import datetime
+
 from pathlib import Path
 from peewee import SqliteDatabase, Model, IntegerField, AutoField, Proxy
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 from nm.core.config import ConfigNm
 from nm.core.info import get_group_list
@@ -90,8 +94,26 @@ async def delete_inexistent_group_self_db(bot: BotClient):
     diff = list(set(ids) - set(group_list))
     SelfMsgRecord.delete().where(SelfMsgRecord.group_id.in_(diff)).execute()
 
-async def update_self_msg_record_db_cron():
-    pass # TODO:
+async def update_self_msg_record_db_cron(bot: BotClient, self_msg_record_db: SqliteDatabase, logger):
+    await init_self_msg_record_db(bot, self_msg_record_db)
+    await delete_inexistent_group_self_db(bot)
+
+async def schedule_statistic_self(bot: BotClient, config_nm: ConfigNm, self_msg_record_db: SqliteDatabase, logger):
+    scheduler = AsyncIOScheduler()
+    scheduler.add_job(
+        update_self_msg_record_db_cron,
+        "interval",
+        hours=12,
+        args=[bot, self_msg_record_db, logger],
+        id="update_self_msg_record_db",
+        next_run_time=datetime.datetime.now() + datetime.timedelta(seconds=10)
+    )
+    scheduler.start()
+    try:
+        await asyncio.Event().wait()
+    except (KeyboardInterrupt, SystemExit):
+        scheduler.shutdown()
+        logger.info(f"(bot:{config_nm.selfid}) stop")
 
 def insert_self_msg_record(msg: GroupMessage):
     msg_record_data = {
