@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import time
 import asyncio
 import datetime
 
@@ -7,8 +8,9 @@ from pathlib import Path
 from peewee import SqliteDatabase, Model, IntegerField, AutoField, Proxy
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
+from nm.funclib.funclib import text_to_png
 from nm.core.config import ConfigNm
-from nm.core.info import get_group_list
+from nm.core.info import get_group_list, get_group_info
 
 from ncatbot.core.message import GroupMessage
 from ncatbot.core.client import BotClient
@@ -127,6 +129,30 @@ def update_self_msg_record(bot: BotClient, msg: GroupMessage, config_nm: ConfigN
     if str(msg.user_id) == config_nm.selfid:
         insert_self_msg_record(msg)
         logger.debug(f"(bot:{config_nm.selfid}) 更新了bot消息記錄數據庫")
+
+async def report_self_msg_record(bot: BotClient, msg: GroupMessage, config_nm:ConfigNm, logger):
+    data:list[SelfMsgRecord] = list(SelfMsgRecord.select())
+    time_now = int(time.time())
+    text = ""
+    for group_time in data:
+        group_text = ""
+        gorup_info = get_group_info(group_time.group_id) # type: ignore
+        group_name = gorup_info.group_name # type: ignore
+        if group_time.time == 0:
+            time_text = "从未"
+        else:
+            time_delta = datetime.timedelta(group_time.time - time_now) # 未校验
+            hms = str(time_delta)
+            time_text = hms
+        group_text = f"{group_name}({group_time.group_id}):"
+        text += group_text
+    img_path = Path(config_nm.cache_path) / "self_msg_record.png"
+    font_path = Path("src", "font", "SourceHanSansCN-Bold.otf")
+    text_to_png(text=text, out_path=str(img_path), font_path=str(font_path))
+    await bot.api.post_group_msg(group_id=msg.group_id, image=str(img_path))
+    logger.info(f"(bot:{config_nm.selfid}) 上报了多久未发言")
+
+
 
 def statistic(bot: BotClient, msg: GroupMessage, config_nm: ConfigNm, logger):
     insert_msg_record(msg)

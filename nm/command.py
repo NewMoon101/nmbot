@@ -11,6 +11,7 @@ from nm.funclib.funclib import get_sysinfo, NoExitArgumentParser
 from nm.funclib.ncfunclib import get_msg_text, get_msg_at, get_msg_type
 from nm.utils.promote import promote_t, show_promote_config, add_tag, del_tag, change_mode, change_mode_to, change_tag, add_group, del_group, change_promote_wait_time
 from nm.utils.master import reply_friend_and_group_num
+from nm.utils.statistic import report_self_msg_record
 
 from ncatbot.core import BotClient
 from ncatbot.core.message import GroupMessage
@@ -156,6 +157,13 @@ async def command(bot: BotClient, msg: GroupMessage, config_nm: ConfigNm, logger
                         args = parser.parse_args(shlex.split(get_msg_text(msg)))
                         if args.group_id:
                             await del_group(bot, msg, args.group_id, config_nm, logger)
+                            return
+                elif args.command == "统计":
+                    parser.add_argument("thing", type=str, help="要显示的东西")
+                    args = parser.parse_args(shlex.split(get_msg_text(msg)))
+                    if args.thing:
+                        if args.thing == "多久":
+                            await report_self_msg_record(bot, msg, config_nm, logger)
                             return
             else:
                 pass
