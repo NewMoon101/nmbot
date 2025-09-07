@@ -49,7 +49,7 @@ async def report_msg_private(msg: PrivateMessage, bot: BotClient, config_nm: Con
         report_group_id: 上报的群ID
         logger: 日志记录器
     """
-    if int(msg.user_id) in config_nm.master:
+    if int(msg.user_id) in config_nm.master or str(msg.user_id) == config_nm.selfid:
         return
     info_reply = f"私聊消息:\n来自>{msg.sender.nickname}({msg.user_id})<"
     await bot.api.post_group_msg(group_id=report_group_id, text=info_reply)
