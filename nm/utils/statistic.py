@@ -132,7 +132,7 @@ def update_self_msg_record(bot: BotClient, msg: GroupMessage, config_nm: ConfigN
 
 async def report_self_msg_record(bot: BotClient, msg: GroupMessage, config_nm:ConfigNm, logger):
     data:list[SelfMsgRecord] = list(SelfMsgRecord.select())
-    data.sort(key= lambda group_time: group_time.time) # type: ignore
+    data.sort(key= lambda group_time: (group_time.time, group_time.group_id)) # type: ignore
     time_now = int(time.time())
     text = ""
     for group_time in data:
