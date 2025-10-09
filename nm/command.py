@@ -7,7 +7,7 @@ from peewee import SqliteDatabase
 
 from nm.core.config import ConfigNm
 from nm.core.info import update_group_info
-from nm.funclib.funclib import get_sysinfo, NoExitArgumentParser
+from nm.funclib.funclib import get_sysinfo, NoExitArgumentParser, stop_program
 from nm.funclib.ncfunclib import get_msg_text, get_msg_at, get_msg_type
 from nm.utils.promote import promote_t, show_promote_config, add_tag, del_tag, change_mode, change_mode_to, change_tag, add_group, del_group, change_promote_wait_time
 from nm.utils.master import reply_friend_and_group_num
@@ -49,19 +49,18 @@ async def command(bot: BotClient, msg: GroupMessage, config_nm: ConfigNm, logger
         config_nm (ConfigNm): 配置實例
         logger: 日志實例
     """
-    # master 命令
-    if int(msg.user_id) in config_nm.master:
-        parser = NoExitArgumentParser(description="NcatBot Command Parser", exit_on_error=False)
-        parser.add_argument("command", type=str, help="要執行的命令")
-        if not get_msg_text(msg).strip(): # 如果消息文本為空，則不執行任何命令; 且防止parser解析出錯導致的sysexit
-            return None
-        try:
-            tokens = shlex.split(get_msg_text(msg).strip())
-            args = parser.parse_args(tokens)
-        except Exception as e:
-            return
-        else:
-            if len(get_msg_at(msg)) == 0 or (config_nm.selfid in get_msg_at(msg) and (len(get_msg_at(msg)) == 1)): # 如果沒被@, 直接執行; 如果被@了, 只有只@了bot纔能執行
+    parser = NoExitArgumentParser(description="NcatBot Command Parser", exit_on_error=False)
+    parser.add_argument("command", type=str, help="要執行的命令")
+    if not get_msg_text(msg).strip(): # 如果消息文本為空，則不執行任何命令; 且防止parser解析出錯導致的sysexit
+        return None
+    try:
+        tokens = shlex.split(get_msg_text(msg).strip())
+        args = parser.parse_args(tokens)
+    except Exception as e:
+        return
+    else:
+        if len(get_msg_at(msg)) == 0 or (config_nm.selfid in get_msg_at(msg) and (len(get_msg_at(msg)) == 1)): # 如果沒被@, 直接執行; 如果被@了, 只有只@了bot纔能執行
+            if int(msg.user_id) in config_nm.master: # master 命令
                 if args.command == "sysinfo":
                     sysinfo = get_sysinfo()
                     logger.info(f"(bot:{config_nm.selfid}) 系統信息: {sysinfo}")
@@ -158,12 +157,13 @@ async def command(bot: BotClient, msg: GroupMessage, config_nm: ConfigNm, logger
                         if args.group_id:
                             await del_group(bot, msg, args.group_id, config_nm, logger)
                             return
-                elif args.command == "统计":
-                    parser.add_argument("thing", type=str, help="要显示的东西")
-                    args = parser.parse_args(shlex.split(get_msg_text(msg)))
-                    if args.thing:
-                        if args.thing == "多久":
-                            await report_self_msg_record(bot, msg, config_nm, logger)
-                            return
-            else:
-                pass
+                elif args.command == "stop":
+                    stop_program()
+                    return
+                else:
+                    pass
+            else: #非主人命令
+                commands = config_nm.command
+                if str(args.command) in commands.command_list.keys():
+                    func = commands.command_list.get(args.command)
+                    # func() # TODO: 
