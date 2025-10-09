@@ -163,7 +163,8 @@ async def command(bot: BotClient, msg: GroupMessage, config_nm: ConfigNm, logger
                 else:
                     pass
             else: #非主人命令
-                commands = config_nm.command
-                if str(args.command) in commands.command_list.keys():
-                    func = commands.command_list.get(args.command)
-                    # func() # TODO: 
+                pass
+                # commands = config_nm.command
+                # if str(args.command) in commands.command_list.keys():
+                #     func = commands.command_list.get(args.command)
+                #     # func() # TODO: 
