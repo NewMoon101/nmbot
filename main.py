@@ -12,7 +12,6 @@ from nm.command import command  # 导入命令处理函数
 from nm.utils.schedule import schedule_main  # 导入调度函数
 from nm.utils.promote import PromoteConfig
 from nm.utils.master import report_ated, report_msg_private, report_poke, report_red_pocket, report_replied  # 导入报告函数
-from nm.utils.statistic import create_msg_record_db, statistic, create_self_msg_record_db, schedule_statistic_self
 
 from ncatbot.utils.config import config
 from ncatbot.core.client import BotClient
@@ -41,9 +40,6 @@ if not cache_path.exists():
 msg_db = create_msg_db(config_nm) # TODO:對於這個庫, 期望之後加入檢測大小自動存檔之前消息的功能
 #TODO: 在此处进行了data/qq{selfid}这个目录是否存在的判定及处理, 然而之后的功能多有使用这个路径, 或许应该把这个判定单独拿出来
 group_info_db = create_group_info_db(config_nm)  # 创建群组信息数据库
-if config_nm.function_open.statistic:
-    msg_record_db = create_msg_record_db(config_nm) # 创建消息信息数据库 TODO: 這裏也需要控制大小
-    self_msg_record_db = create_self_msg_record_db(config_nm)
 
 bot = BotClient() # 创建BotClient
 logger = get_log() # 创建logger
@@ -58,7 +54,6 @@ async def init_during_group_event(msg: GroupMessage):
         logger.info(f"(bot:{config_nm.selfid}) 進行定時任務和宣發初始化")
         global_init += 1
         asyncio.create_task(schedule_main(bot, group_info_db, logger))
-        asyncio.create_task(schedule_statistic_self(bot, config_nm, self_msg_record_db, logger))
         if config_nm.function_open.promote:
             global promote_config
             promote_config = PromoteConfig(config_nm, logger)
@@ -82,11 +77,6 @@ if config_nm.function_open.command:
     @bot.group_event()
     async def on_command(msg: GroupMessage):
         await command(bot, msg, config_nm, logger, group_info_db)  # 调用命令处理函数
-
-if config_nm.function_open.statistic:
-    @bot.group_event()
-    async def on_statistic(msg: GroupMessage):
-        statistic(bot, msg, config_nm, logger)
 
 # 以下 private event
 if config_nm.function_open.report.private_msg:

@@ -11,7 +11,6 @@ from nm.funclib.funclib import get_sysinfo, NoExitArgumentParser, stop_program
 from nm.funclib.ncfunclib import get_msg_text, get_msg_at, get_msg_type
 from nm.utils.promote import promote_t, show_promote_config, add_tag, del_tag, change_mode, change_mode_to, change_tag, add_group, del_group, change_promote_wait_time
 from nm.utils.master import reply_friend_and_group_num
-from nm.utils.statistic import report_self_msg_record
 
 from ncatbot.core import BotClient
 from ncatbot.core.message import GroupMessage

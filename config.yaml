@@ -52,7 +52,6 @@ function_open: # 功能开关
     red_pocket: False # 红包
     replied: False # bot的消息被回复
   promote: False # 宣发功能
-  statistic: False # 统计功能
 
 db:
   type: "postgres"  # 数据库类型
